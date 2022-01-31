@@ -59,9 +59,17 @@ namespace Garage2._0.Controllers
         {
             if (ModelState.IsValid)
             {
+                
+                if (!_context.ParkVehicle.Any(x => x.RegNumber == parkVehicle.RegNumber))
+                { 
                 _context.Add(parkVehicle);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+                
+                }
+
+                ModelState.AddModelError(nameof(parkVehicle.RegNumber), "The RegNr needs to be unique!");
+                return View();
             }
             return View(parkVehicle);
         }
@@ -96,23 +104,30 @@ namespace Garage2._0.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                if (!_context.ParkVehicle.Any(x => x.RegNumber == parkVehicle.RegNumber && x.Id != parkVehicle.Id))
                 {
-                    _context.Update(parkVehicle);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ParkVehicleExists(parkVehicle.Id))
+                    try
                     {
-                        return NotFound();
+                        _context.Update(parkVehicle);
+                        await _context.SaveChangesAsync();
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!ParkVehicleExists(parkVehicle.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
+
+
+                    return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError(nameof(parkVehicle.RegNumber), "The RegNr needs to be unique!");
+                return View(); 
             }
             return View(parkVehicle);
         }
