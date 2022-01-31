@@ -6,6 +6,13 @@
 
 <h1>Garage List</h1>
 
+<form asp-controller="ParkVehicles" asp-action="Index">
+    <p>
+        Search Reg No: <input type="text" name="SearchString" />
+        <input type="submit" value="Search" />
+    </p>
+</form>
+
 <div class="table-responsive col m-3 ">
     <table class="table table caption-top table-bordered table-hover table-primary ">
         <caption> Parked Vehicles Details </caption>
