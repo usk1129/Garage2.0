@@ -20,10 +20,18 @@ namespace Garage2._0.Controllers
             _context = context;
         }
 
-        // GET: ParkVehicles
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.ParkVehicle.ToListAsync());
+            var vehicles = from v in _context.ParkVehicle
+                           select v;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                vehicles = vehicles.Where(s => s.RegNumber!.Contains(searchString));
+                return View(await vehicles.ToListAsync());
+            }
+            else
+                return View(await _context.ParkVehicle.ToListAsync());
         }
 
         // GET: ParkVehicles/Details/5
