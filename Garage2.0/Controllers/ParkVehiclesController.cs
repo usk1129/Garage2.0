@@ -77,10 +77,11 @@ namespace Garage2._0.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,VehicleType,RegNumber,Color,Brand,Model,Wheels,CheckInTime")] ParkVehicle parkVehicle)
         {
+            var regNrDuplicate = await _context.ParkVehicle.FirstOrDefaultAsync(x => x.RegNumber == parkVehicle.RegNumber);
             if (ModelState.IsValid)
             {
 
-                if (!_context.ParkVehicle.Any(x => x.RegNumber == parkVehicle.RegNumber))
+               if (regNrDuplicate == default)
                 {
                     _context.Add(parkVehicle);
                     await _context.SaveChangesAsync();
