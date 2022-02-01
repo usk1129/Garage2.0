@@ -34,7 +34,7 @@ namespace Garage2._0.Controllers
 
         public async Task<IActionResult> Index(string searchString,string sortOrder)
         {
-            ViewBag.VehicleSortParm = sortOrder == "Vehicle Type" ? "vehicle_desc" : "Vehicle Type";
+            ViewBag.VehicleSortParm = String.IsNullOrEmpty(sortOrder) ? "vehicle_desc" : "";
             ViewBag.RegNumberSortParm = sortOrder == "RegNumber" ? "RegNumber_desc" : "RegNumber";
             ViewBag.ColorSortParm = sortOrder == "Color" ? "Color_desc" : "Color";
             ViewBag.BrandSortParm = sortOrder == "Brand" ? "Brand_desc" : "Brand";
@@ -92,13 +92,13 @@ namespace Garage2._0.Controllers
                 case "CheckInTime_desc":
                     vehicles = vehicles.OrderByDescending(v => v.CheckInTime);
                     break;
-                     
+                   
                 default:
                     vehicles = vehicles.OrderBy(v => v.VehicleType);
                     break;
             }
+            return View(await vehicles.AsNoTracking().ToListAsync());
 
-            return View(await vehicles.ToListAsync());
 
 
         }
