@@ -53,10 +53,13 @@
             @Html.DisplayFor(model => model.CheckInTime)
         </dd>
     </dl>
-    
+    <form asp-action="DeleteReceipt">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Unpark(receipt)" class="btn btn-danger" /> 
+    </form>    
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Unpark" class="btn btn-danger" /> |
+        <input type="submit" value="Unpark(no receipt)" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>
 </div>
