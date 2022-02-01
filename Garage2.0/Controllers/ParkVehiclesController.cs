@@ -32,11 +32,19 @@ namespace Garage2._0.Controllers
             return View(nameof(Index), await model.ToListAsync());
         }
 
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString,string sortOrder)
         {
+            ViewBag.VehicleSortParm = String.IsNullOrEmpty(sortOrder) ? "vehicle_desc" : "";
+            ViewBag.RegNumberSortParm = String.IsNullOrEmpty(sortOrder) ? "RegNumber_desc" : "";
+            ViewBag.ColorSortParm = String.IsNullOrEmpty(sortOrder) ? "Color_desc" : "";
+            ViewBag.BrandSortParm = String.IsNullOrEmpty(sortOrder) ? "Brand_desc" : "";
+            ViewBag.ModelSortParm = String.IsNullOrEmpty(sortOrder) ? "Model_desc" : "";
+            ViewBag.WheelsSortParm = String.IsNullOrEmpty(sortOrder.ToString()) ? "Wheels_desc" : "";
+            ViewBag.CheckInTimeSorrParm = sortOrder == "Date" ? "CheckInTime_desc" : "Date";
+
             var vehicles = from v in _context.ParkVehicle
                            select v;
-
+            
             if (!String.IsNullOrEmpty(searchString))
             {
                 vehicles = vehicles.Where(s => s.RegNumber!.Contains(searchString));
@@ -44,7 +52,42 @@ namespace Garage2._0.Controllers
             }
             else
                 return View(await _context.ParkVehicle.ToListAsync());
+
+            switch (sortOrder)
+            {
+                case "vehicle_desc":
+                    vehicles = vehicles.OrderByDescending(v => v.VehicleType);
+                    break;
+                case "RegNumer_desc":
+                    vehicles = vehicles.OrderByDescending(v => v.RegNumber);
+                    break;
+                case "Color_desc":
+                    vehicles = vehicles.OrderByDescending(v => v.Color);
+                    break;
+                case "Brand_desc":
+                    vehicles = vehicles.OrderByDescending(v => v.Brand);
+                    break;
+                case "Model_desc":
+                    vehicles = vehicles.OrderByDescending(v => v.Model);
+                    break;
+                case "Wheels_desc":
+                    vehicles = vehicles.OrderByDescending(v => v.Wheels);
+                    break;
+                case "CheckInTime_desc":
+                    vehicles = vehicles.OrderByDescending(_ => _.CheckInTime);
+                default:
+                    vehicles = vehicles.OrderBy(v => v.VehicleType);
+                    break;
+            }
+
+            return View(await vehicles.ToListAsync());
+
+
         }
+
+
+
+
 
         // GET: ParkVehicles/Details/5
         public async Task<IActionResult> Details(int? id)
