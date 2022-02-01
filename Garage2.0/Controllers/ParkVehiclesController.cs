@@ -20,10 +20,30 @@ namespace Garage2._0.Controllers
             _context = context;
         }
 
-        // GET: ParkVehicles
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Filter(string regSearch, int? vehicleType)
         {
-            return View(await _context.ParkVehicle.ToListAsync());
+            var model = string.IsNullOrWhiteSpace(regSearch) ?
+                                    _context.ParkVehicle :
+                                    _context.ParkVehicle.Where(m => m.RegNumber.Contains(regSearch));
+               model = vehicleType == null ?
+                             model :
+                             model.Where(m => (int)m.VehicleType== vehicleType);
+
+            return View(nameof(Index), await model.ToListAsync());
+        }
+
+        public async Task<IActionResult> Index(string searchString)
+        {
+            var vehicles = from v in _context.ParkVehicle
+                           select v;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                vehicles = vehicles.Where(s => s.RegNumber!.Contains(searchString));
+                return View(await vehicles.ToListAsync());
+            }
+            else
+                return View(await _context.ParkVehicle.ToListAsync());
         }
 
         // GET: ParkVehicles/Details/5
@@ -59,9 +79,17 @@ namespace Garage2._0.Controllers
         {
             if (ModelState.IsValid)
             {
+                
+                if (!_context.ParkVehicle.Any(x => x.RegNumber == parkVehicle.RegNumber))
+                { 
                 _context.Add(parkVehicle);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+                
+                }
+
+                ModelState.AddModelError(nameof(parkVehicle.RegNumber), "The RegNr needs to be unique!");
+                return View();
             }
             return View(parkVehicle);
         }
@@ -96,23 +124,30 @@ namespace Garage2._0.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                if (!_context.ParkVehicle.Any(x => x.RegNumber == parkVehicle.RegNumber && x.Id != parkVehicle.Id))
                 {
-                    _context.Update(parkVehicle);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ParkVehicleExists(parkVehicle.Id))
+                    try
                     {
-                        return NotFound();
+                        _context.Update(parkVehicle);
+                        await _context.SaveChangesAsync();
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!ParkVehicleExists(parkVehicle.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
+
+
+                    return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError(nameof(parkVehicle.RegNumber), "The RegNr needs to be unique!");
+                return View(); 
             }
             return View(parkVehicle);
         }

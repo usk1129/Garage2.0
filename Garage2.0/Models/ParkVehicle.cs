@@ -5,7 +5,7 @@ namespace Garage2._0.Models
     public class ParkVehicle
     {
         public int Id { get; set; }
-        public string VehicleType { get; set; }
+        public VehicleType VehicleType { get; set; }
 
         [StringLength(30)]
         public string RegNumber { get; set; }
