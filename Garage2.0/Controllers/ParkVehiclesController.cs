@@ -20,29 +20,38 @@ namespace Garage2._0.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Filter(string regSearch, int? vehicleType)
+        public async Task<IActionResult> Filter(string? regSearch, string? colSearch, string? brandSearch, string modelSearch, int? wheelSearch, int? vehicleType)
         {
             var model = string.IsNullOrWhiteSpace(regSearch) ?
                                     _context.ParkVehicle :
                                     _context.ParkVehicle.Where(m => m.RegNumber.Contains(regSearch));
-               model = vehicleType == null ?
+            
+            model = string.IsNullOrWhiteSpace(colSearch) ?
+                          model :
+                          model.Where(m => m.Color.Contains(colSearch));
+
+            model = string.IsNullOrWhiteSpace(brandSearch) ?
+                          model :
+                          model.Where(m => m.Color.Contains(brandSearch));
+
+            model = string.IsNullOrWhiteSpace(modelSearch) ?
+                          model :
+                          model.Where(m => m.Color.Contains(modelSearch));
+
+            model = wheelSearch == null ?
+                 model :
+                 model.Where(m => m.Wheels == wheelSearch);
+
+
+            model = vehicleType == null ?
                              model :
                              model.Where(m => (int)m.VehicleType== vehicleType);
 
             return View(nameof(Index), await model.ToListAsync());
         }
 
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index()
         {
-            var vehicles = from v in _context.ParkVehicle
-                           select v;
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                vehicles = vehicles.Where(s => s.RegNumber!.Contains(searchString));
-                return View(await vehicles.ToListAsync());
-            }
-            else
                 return View(await _context.ParkVehicle.ToListAsync());
         }
 
