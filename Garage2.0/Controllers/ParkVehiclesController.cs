@@ -176,8 +176,47 @@ namespace Garage2._0.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var parkVehicle = await _context.ParkVehicle.FindAsync(id);
+
+            if (parkVehicle != null)
+            {
+                _context.ParkVehicle.Remove(parkVehicle);
+                await _context.SaveChangesAsync();
+            } 
+            return RedirectToAction(nameof(Index));
+
+        }
+
+        [HttpPost, ActionName("DeleteReceipt")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Receipt(int id)
+        {
+            var currentTime = DateTime.Now;
+            var priceRate = 3;
+            var parkVehicle = await _context.ParkVehicle
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (parkVehicle != null)
+            {
+            var receipt = new Receipt
+            {
+                Id = id,
+                VehicleType = parkVehicle.VehicleType,
+                RegNumber = parkVehicle.RegNumber,
+                Color = parkVehicle.Color,
+                Brand = parkVehicle.Brand,
+                Model = parkVehicle.Model,
+                Wheels = parkVehicle.Wheels,
+                CheckInTime = parkVehicle.CheckInTime,
+                CheckOutTime = currentTime,
+                ParkedTime = currentTime - parkVehicle.CheckInTime,
+                Price = (int)(currentTime - parkVehicle.CheckInTime).TotalMinutes * priceRate
+            
+              };          
+
             _context.ParkVehicle.Remove(parkVehicle);
             await _context.SaveChangesAsync();
+                return View(receipt);
+
+            }
             return RedirectToAction(nameof(Index));
         }
 
