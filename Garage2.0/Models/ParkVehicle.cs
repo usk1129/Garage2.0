@@ -24,5 +24,7 @@ namespace Garage2._0.Models
         [Display(Name = "Check-In Time")]
         public DateTime  CheckInTime { get; set; }
 
+        public DateTimeOffset Now { get; set; }
+
     }
 }
