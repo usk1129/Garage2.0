@@ -4,7 +4,7 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Park you're vehicle</h1>
+<h1>Park your vehicle</h1>
 
 <h4>Enter the vehicle's data here</h4>
 <hr />
@@ -14,7 +14,9 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="VehicleType" class="control-label"></label>
-                <input asp-for="VehicleType" class="form-control" />
+                <select asp-for="VehicleType" class="form-control"
+                        asp-items="Html.GetEnumSelectList<VehicleType>()">
+                </select>
                 <span asp-validation-for="VehicleType" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -48,7 +50,7 @@
                 <span asp-validation-for="CheckInTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Park" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -59,5 +61,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
 }
