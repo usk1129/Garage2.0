@@ -34,13 +34,13 @@ namespace Garage2._0.Controllers
 
         public async Task<IActionResult> Index(string searchString,string sortOrder)
         {
-            ViewBag.VehicleSortParm = String.IsNullOrEmpty(sortOrder) ? "vehicle_desc" : "";
-            ViewBag.RegNumberSortParm = String.IsNullOrEmpty(sortOrder) ? "RegNumber_desc" : "";
-            ViewBag.ColorSortParm = String.IsNullOrEmpty(sortOrder) ? "Color_desc" : "";
-            ViewBag.BrandSortParm = String.IsNullOrEmpty(sortOrder) ? "Brand_desc" : "";
-            ViewBag.ModelSortParm = String.IsNullOrEmpty(sortOrder) ? "Model_desc" : "";
-            ViewBag.WheelsSortParm = String.IsNullOrEmpty(sortOrder.ToString()) ? "Wheels_desc" : "";
-            ViewBag.CheckInTimeSorrParm = sortOrder == "Date" ? "CheckInTime_desc" : "Date";
+            ViewBag.VehicleSortParm = sortOrder == "Vehicle Type" ? "vehicle_desc" : "Vehicle Type";
+            ViewBag.RegNumberSortParm = sortOrder == "RegNumber" ? "RegNumber_desc" : "RegNumber";
+            ViewBag.ColorSortParm = sortOrder == "Color" ? "Color_desc" : "Color";
+            ViewBag.BrandSortParm = sortOrder == "Brand" ? "Brand_desc" : "Brand";
+            ViewBag.ModelSortParm = sortOrder == "Model" ? "Model_desc" : "Model";
+            ViewBag.WheelsSortParm = sortOrder == "Wheels" ? "Wheels_desc" : "Wheels";
+            ViewBag.CheckInTimeSortParm = sortOrder == "CheckInTime" ? "CheckInTime_desc" : "CheckInTime";
 
             var vehicles = from v in _context.ParkVehicle
                            select v;
@@ -50,31 +50,49 @@ namespace Garage2._0.Controllers
                 vehicles = vehicles.Where(s => s.RegNumber!.Contains(searchString));
                 return View(await vehicles.ToListAsync());
             }
-            else
-                return View(await _context.ParkVehicle.ToListAsync());
 
             switch (sortOrder)
             {
                 case "vehicle_desc":
                     vehicles = vehicles.OrderByDescending(v => v.VehicleType);
                     break;
-                case "RegNumer_desc":
+                case "RegNumber":
+                    vehicles = vehicles.OrderBy(v => v.RegNumber);
+                    break;
+                case "RegNumber_desc":
                     vehicles = vehicles.OrderByDescending(v => v.RegNumber);
+                    break;
+                case "Color":
+                    vehicles = vehicles.OrderBy(v => v.Color);
                     break;
                 case "Color_desc":
                     vehicles = vehicles.OrderByDescending(v => v.Color);
                     break;
+                case "Brand":
+                    vehicles = vehicles.OrderBy(v => v.Brand);
+                    break;
                 case "Brand_desc":
                     vehicles = vehicles.OrderByDescending(v => v.Brand);
+                    break;
+                case "Model":
+                    vehicles = vehicles.OrderBy(v => v.Model);
                     break;
                 case "Model_desc":
                     vehicles = vehicles.OrderByDescending(v => v.Model);
                     break;
+                case "Wheels":
+                    vehicles = vehicles.OrderBy(v => v.Wheels);
+                    break;
                 case "Wheels_desc":
                     vehicles = vehicles.OrderByDescending(v => v.Wheels);
                     break;
+                case "CheckInTime":
+                    vehicles = vehicles.OrderBy(v => v.CheckInTime);
+                    break;
                 case "CheckInTime_desc":
-                    vehicles = vehicles.OrderByDescending(_ => _.CheckInTime);
+                    vehicles = vehicles.OrderByDescending(v => v.CheckInTime);
+                    break;
+                     
                 default:
                     vehicles = vehicles.OrderBy(v => v.VehicleType);
                     break;
