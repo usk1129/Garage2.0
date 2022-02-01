@@ -2,7 +2,7 @@
 
 namespace Garage2._0.Models
 {
-    public class Receipt
+    public class ReceiptViewModel
     {
         public int Id { get; set; }
         public VehicleType VehicleType { get; set; }
