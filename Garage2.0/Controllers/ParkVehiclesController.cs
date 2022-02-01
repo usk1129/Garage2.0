@@ -25,9 +25,9 @@ namespace Garage2._0.Controllers
             var model = string.IsNullOrWhiteSpace(regSearch) ?
                                     _context.ParkVehicle :
                                     _context.ParkVehicle.Where(m => m.RegNumber.Contains(regSearch));
-               model = vehicleType == null ?
-                             model :
-                             model.Where(m => (int)m.VehicleType== vehicleType);
+            model = vehicleType == null ?
+                          model :
+                          model.Where(m => (int)m.VehicleType == vehicleType);
 
             return View(nameof(Index), await model.ToListAsync());
         }
@@ -79,13 +79,13 @@ namespace Garage2._0.Controllers
         {
             if (ModelState.IsValid)
             {
-                
+
                 if (!_context.ParkVehicle.Any(x => x.RegNumber == parkVehicle.RegNumber))
-                { 
-                _context.Add(parkVehicle);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-                
+                {
+                    _context.Add(parkVehicle);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+
                 }
 
                 ModelState.AddModelError(nameof(parkVehicle.RegNumber), "The RegNr needs to be unique!");
@@ -147,7 +147,7 @@ namespace Garage2._0.Controllers
                     return RedirectToAction(nameof(Index));
                 }
                 ModelState.AddModelError(nameof(parkVehicle.RegNumber), "The RegNr needs to be unique!");
-                return View(); 
+                return View();
             }
             return View(parkVehicle);
         }
@@ -181,7 +181,7 @@ namespace Garage2._0.Controllers
             {
                 _context.ParkVehicle.Remove(parkVehicle);
                 await _context.SaveChangesAsync();
-            } 
+            }
             return RedirectToAction(nameof(Index));
 
         }
@@ -191,29 +191,29 @@ namespace Garage2._0.Controllers
         public async Task<IActionResult> Receipt(int id)
         {
             var currentTime = DateTime.Now;
-            var priceRate = 3;
+            var priceRate = 1;
             var parkVehicle = await _context.ParkVehicle
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (parkVehicle != null)
             {
-            var receipt = new ReceiptViewModel
-            {
-                Id = id,
-                VehicleType = parkVehicle.VehicleType,
-                RegNumber = parkVehicle.RegNumber,
-                Color = parkVehicle.Color,
-                Brand = parkVehicle.Brand,
-                Model = parkVehicle.Model,
-                Wheels = parkVehicle.Wheels,
-                CheckInTime = parkVehicle.CheckInTime,
-                CheckOutTime = currentTime,
-                ParkedTime = currentTime - parkVehicle.CheckInTime,
-                Price = (int)(currentTime - parkVehicle.CheckInTime).TotalMinutes * priceRate
-            
-              };          
+                var receipt = new ReceiptViewModel
+                {
+                    Id = id,
+                    VehicleType = parkVehicle.VehicleType,
+                    RegNumber = parkVehicle.RegNumber,
+                    Color = parkVehicle.Color,
+                    Brand = parkVehicle.Brand,
+                    Model = parkVehicle.Model,
+                    Wheels = parkVehicle.Wheels,
+                    CheckInTime = parkVehicle.CheckInTime,
+                    CheckOutTime = currentTime,
+                    ParkedTime = currentTime - parkVehicle.CheckInTime,
+                    Price = 5 + (int)(currentTime - parkVehicle.CheckInTime).TotalMinutes * priceRate
 
-            _context.ParkVehicle.Remove(parkVehicle);
-            await _context.SaveChangesAsync();
+                };
+
+                _context.ParkVehicle.Remove(parkVehicle);
+                await _context.SaveChangesAsync();
                 return View(receipt);
 
             }
