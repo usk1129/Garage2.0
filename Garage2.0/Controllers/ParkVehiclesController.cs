@@ -20,6 +20,18 @@ namespace Garage2._0.Controllers
             _context = context;
         }
 
+        public async Task<IActionResult> Filter(string regSearch, int? vehicleType)
+        {
+            var model = string.IsNullOrWhiteSpace(regSearch) ?
+                                    _context.ParkVehicle :
+                                    _context.ParkVehicle.Where(m => m.RegNumber.Contains(regSearch));
+               model = vehicleType == null ?
+                             model :
+                             model.Where(m => (int)m.VehicleType== vehicleType);
+
+            return View(nameof(Index), await model.ToListAsync());
+        }
+
         public async Task<IActionResult> Index(string searchString)
         {
             var vehicles = from v in _context.ParkVehicle
