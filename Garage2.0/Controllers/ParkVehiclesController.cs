@@ -196,7 +196,7 @@ namespace Garage2._0.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (parkVehicle != null)
             {
-            var receipt = new Receipt
+            var receipt = new ReceiptViewModel
             {
                 Id = id,
                 VehicleType = parkVehicle.VehicleType,
