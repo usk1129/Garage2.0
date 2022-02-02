@@ -2,27 +2,33 @@
 
 namespace Garage2._0.Models
 {
-    public class ParkVehicle
+    public class ReceiptViewModel
     {
         public int Id { get; set; }
         public VehicleType VehicleType { get; set; }
 
-        [StringLength(30)]
         public string RegNumber { get; set; }
 
-        [StringLength(30)]
+
         public string Color { get; set; }
 
-        [StringLength(30)]
+
         public string Brand { get; set; }
 
-        [StringLength(30)]
+
         public string Model { get; set; }
 
-        [Range(0,10)]
+
         public int Wheels { get; set; }
         [Display(Name = "Check-In Time")]
-        public DateTime  CheckInTime { get; set; }
+        public DateTime CheckInTime { get; set; }
+        [Display(Name = "Check-Out Time")]
+        public DateTime CheckOutTime { get; set; }
+
+        public int Price { get; set; }
+        [Display(Name = "Duration")] 
+        [DisplayFormat(DataFormatString = @"{0:dd\:hh\:mm\:ss}", ApplyFormatInEditMode = true)]
+        public TimeSpan ParkedTime { get; set; }
 
     }
 }

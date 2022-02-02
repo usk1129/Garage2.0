@@ -1,13 +1,13 @@
-﻿@model Garage2._0.Models.ParkVehicle
+﻿@model Garage2._0.Models.ReceiptViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Receipt";
 }
 
-<h1>Details</h1>
+<h1>Receipt</h1>
 
 <div>
-    <h4>Parked Vehicle Detail</h4>
+    <h4>Receipt details</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -52,9 +52,27 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.CheckInTime)
         </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CheckOutTime)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CheckOutTime)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ParkedTime)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ParkedTime)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Price) <text>kr</text>
+        </dd>
+
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

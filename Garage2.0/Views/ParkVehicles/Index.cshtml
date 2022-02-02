@@ -1,71 +1,97 @@
 ﻿@model IEnumerable<Garage2._0.Models.ParkVehicle>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Garage List";
 }
 
-<h1>Index</h1>
+<h1>Garage List</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.VehicleType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RegNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Color)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Brand)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Model)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Wheels)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CheckInTime)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.VehicleType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RegNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Color)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Brand)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Model)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Wheels)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CheckInTime)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<form asp-action="Filter">
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" name="regSearch" placeholder="Search on registration no..." />
+        <input type="text" class="form-control" name="colSearch" placeholder="Search on color..." />
+        <input type="text" class="form-control" name="brandSearch" placeholder="Search on brand..." />
+        <input type="text" class="form-control" name="modelSearch" placeholder="Search on model..." />
+        <input type="text" class="form-control" name="wheelSearch" placeholder="Search on no of wheels..." />
+
+        <div class="input-group-append">
+            <select class="form-control" name="vehicleType" asp-items="@Html.GetEnumSelectList<VehicleType>()">
+                <option selected="selected" value="">Please select</option>
+            </select>
+        </div>
+    </div>
+        <div class="input-group mb-3">
+            <div class="input-group-append ml-5">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-search">&emsp;Search</i></button>
+            </div>
+            <div class="input-group-append ml-5">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-search">&emsp;Reset</i></button>
+            </div>
+        </div>
+</form>
+
+
+<div class="table-responsive col m-3 ">
+    <table class="table table caption-top table-bordered table-hover table-primary ">
+        <caption> Parked Vehicles Details </caption>
+        <thead>
+            <tr>
+                <th scope="col">
+                   @Html.ActionLink("Vehicle Type", "Index", new { sortOrder = ViewBag.VehicleSortParm})
+                </th>
+                <th>
+                    @Html.ActionLink("RegNumber", "Index", new { sortOrder = ViewBag.RegNumberSortParm})
+                </th>
+                <th>
+                    @Html.ActionLink("Color", "Index", new { sortOrder = ViewBag.ColorSortParm})
+                </th>
+                <th>
+                   @Html.ActionLink("Brand", "Index", new { sortOrder = ViewBag.BrandSortParm})
+                </th>
+                <th>
+                    @Html.ActionLink("Model", "Index", new { sortOrder = ViewBag.ModelSortParm})
+                </th>
+                <th>
+                    @Html.ActionLink("Wheels", "Index", new { sortOrder = ViewBag.WheelsSortParm})
+                </th>
+                <th>
+                    @Html.ActionLink("CheckInTime", "Index", new { sortOrder = ViewBag.CheckInTimeSortParm})
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.VehicleType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RegNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Color)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Brand)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Model)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Wheels)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CheckInTime)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Check-Out</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
