@@ -1,13 +1,13 @@
-﻿@model Garage2._0.Models.ParkVehicle
+﻿@model Garage2._0.Models.ReceiptViewModel
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Receipt";
 }
 
-<h1>Unpark a vehicle</h1>
+<h1>Receipt</h1>
 
-<h3>Are you sure you want to unpark your vehicle?</h3>
 <div>
+    <h4>Receipt details</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -52,14 +52,27 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.CheckInTime)
         </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CheckOutTime)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CheckOutTime)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ParkedTime)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ParkedTime)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Price) <text>kr</text>
+        </dd>
+
     </dl>
-    <form asp-action="DeleteReceipt">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Unpark(receipt)" class="btn btn-danger" /> 
-    </form>    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Unpark(no receipt)" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
 </div>
