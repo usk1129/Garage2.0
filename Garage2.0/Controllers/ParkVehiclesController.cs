@@ -162,6 +162,7 @@ namespace Garage2._0.Controllers
 
                if (regNrDuplicate == default)
                 {
+                    parkVehicle.CheckInTime = DateTime.Now;
                     _context.Add(parkVehicle);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -274,7 +275,7 @@ namespace Garage2._0.Controllers
             var priceRate = 1;
             var parkVehicle = await _context.ParkVehicle
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (parkVehicle != null)
+            if (parkVehicle != default)
             {
                 var receipt = new ReceiptViewModel
                 {
