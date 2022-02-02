@@ -50,6 +50,7 @@ namespace Garage2._0.Controllers
             return View(nameof(Index), await model.ToListAsync());
         }
 
+
         public async Task<IActionResult> Index(string searchString,string sortOrder)
         {
             ViewBag.VehicleSortParm = String.IsNullOrEmpty(sortOrder) ? "vehicle_desc" : "";
@@ -58,7 +59,7 @@ namespace Garage2._0.Controllers
             ViewBag.BrandSortParm = sortOrder == "Brand" ? "Brand_desc" : "Brand";
             ViewBag.ModelSortParm = sortOrder == "Model" ? "Model_desc" : "Model";
             ViewBag.WheelsSortParm = sortOrder == "Wheels" ? "Wheels_desc" : "Wheels";
-            ViewBag.CheckInTimeSortParm = sortOrder == "CheckInTime" ? "CheckInTime_desc" : "CheckInTime";
+            ViewBag.CheckInTimeSortParm = sortOrder == "Date" ? "CheckInTime_desc" : "Date";
 
             var vehicles = from v in _context.ParkVehicle
                            select v;
@@ -104,7 +105,7 @@ namespace Garage2._0.Controllers
                 case "Wheels_desc":
                     vehicles = vehicles.OrderByDescending(v => v.Wheels);
                     break;
-                case "CheckInTime":
+                case "Date":
                     vehicles = vehicles.OrderBy(v => v.CheckInTime);
                     break;
                 case "CheckInTime_desc":
@@ -116,9 +117,6 @@ namespace Garage2._0.Controllers
                     break;
             }
             return View(await vehicles.AsNoTracking().ToListAsync());
-
-
-
         }
 
 
