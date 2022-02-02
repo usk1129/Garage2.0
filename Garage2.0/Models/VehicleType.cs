@@ -2,12 +2,12 @@
 {
     public enum VehicleType
     {
-        Car,
-        Motorcycle,
         Bus,
+        Car,
+        Forklift,
+        Motorcycle,
         Truck,
-        Tractor,
-        Forklift
+        Tractor
 
     }
 }
