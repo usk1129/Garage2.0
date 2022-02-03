@@ -104,7 +104,7 @@ const getParkingSlot = () => {
                         console.log ("here value" + slots.value);
 
                 option = document.createElement('option');
-                option.setAttribute('value', slots.value);
+                option.setAttribute('value', slots.text);
                 option.appendChild(document.createTextNode(slots.text));
                 parkingSlotSelect.append(option);
 
