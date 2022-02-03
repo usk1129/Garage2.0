@@ -21,11 +21,23 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="VehicleType" class="control-label"></label>
-                <select asp-for="VehicleType" class="form-control"
-                        asp-items="Html.GetEnumSelectList<VehicleType>()">
+                <select asp-for="VehicleType" class="form-control" id="VehicleTypeId" 
+                        asp-items="Html.GetEnumSelectList<VehicleType>()" >
+                            <option value="">Choose vehicle type</option>
                 </select>
                 <span asp-validation-for="VehicleType" class="text-danger"></span>
             </div>
+            
+            <div class="form-group">
+                <label asp-for="ParkingSlot" class="control-label" ></label>
+                <select asp-for="ParkingSlot" class="form-control" id="ParkingSlotId"
+                        ;">
+                    <option value="">Choose Parking Slot</option>
+                </select>
+                <span asp-validation-for="VehicleType" class="text-danger"></span>
+            </div>
+  
+
             <div class="form-group">
                 <label asp-for="RegNumber" class="control-label"></label>
                 <input asp-for="RegNumber" class="form-control" />
@@ -52,7 +64,7 @@
                 <span asp-validation-for="Wheels" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Park" class="btn btn-primary" />
+                <input type="submit" value="Park" class="btn btn-primary" id="SubmitId"/>
             </div>
         </form>
     </div>
@@ -65,5 +77,58 @@
 @section Scripts {
     @{
     await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    <script type="text/javascript">
+
+
+const vehicleTypeDropDown = document.querySelector('#VehicleTypeId');
+
+const getParkingSlot = () => {
+
+    console.log("out ut in the....");
+    var selectedVehicleType = $("#VehicleTypeId").val();
+    var parkingSlotSelect = $('#ParkingSlotId');
+    //var parkingSlotSelect = document.querySelector('#ParkingSlotId');
+    parkingSlotSelect.empty();
+
+    console.log ("here in the out..");
+    if (selectedVehicleType != null && selectedVehicleType != '') {
+        $.getJSON('@Url.Action("GetParkingSlots")', { vehicleType: selectedVehicleType }, function (slots) {
+    console.log ("here in the func..");
+            if (slots != null && !jQuery.isEmptyObject(slots)) {
+                    console.log ("here in the inner..");
+                //parkingSlotSelect.append($('<option/>', {
+                //    value: null,
+                //    text: ""
+                //}));
+                $.each(slots, function (index, slots) {
+                        console.log ("here in the inner most loop..");
+                        console.log ("here text" + slots.text);
+                        console.log ("here value" + slots.value);
+
+                option = document.createElement('option');
+                option.setAttribute('value', slots.text);
+                option.appendChild(document.createTextNode(slots.text));
+                parkingSlotSelect.append(option);
+
+                if (slots.value === "-1")
+                {
+                    document.querySelector('#SubmitId').disabled = true;
+                }
+                else 
+                {
+                    document.querySelector('#SubmitId').disabled = false;
+
+                }
+                });
+            };
+        });
+    }
+
+}
+vehicleTypeDropDown.addEventListener('change', getParkingSlot);
+
+    
+    </script>
 }
 }
+
