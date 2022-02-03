@@ -216,8 +216,12 @@ namespace Garage2._0.Controllers
 
             foreach (var item in slotMap)
             {
-                if (item.Key.Contains(i))
-                    return true;
+                string[] slots = item.Key.Split(',');
+                for (int j = 0; j < slots.Length; j++)
+                {
+                    if (slots[j].Equals(i))
+                        return true;
+                }
             }
             return false;
         }
