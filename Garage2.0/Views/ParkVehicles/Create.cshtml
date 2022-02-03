@@ -32,7 +32,7 @@
                 <label asp-for="ParkingSlot" class="control-label" ></label>
                 <select asp-for="ParkingSlot" class="form-control" id="ParkingSlotId"
                         ;">
-                    <option value="">Choose Parking Slot</option>
+                    <option value="">First Choose Vehicle Type</option>
                 </select>
                 <span asp-validation-for="VehicleType" class="text-danger"></span>
             </div>
@@ -82,29 +82,20 @@
 
 const vehicleTypeDropDown = document.querySelector('#VehicleTypeId');
 
+const resetVehicleType = () => {
+    vehicleTypeDropDown.selected = false;
+    vehicleTypeDropDown.SelectedIndex = -1;
+}
+
 const getParkingSlot = () => {
 
-    console.log("out ut in the....");
     var selectedVehicleType = $("#VehicleTypeId").val();
     var parkingSlotSelect = $('#ParkingSlotId');
-    //var parkingSlotSelect = document.querySelector('#ParkingSlotId');
     parkingSlotSelect.empty();
-
-    console.log ("here in the out..");
     if (selectedVehicleType != null && selectedVehicleType != '') {
         $.getJSON('@Url.Action("GetParkingSlots")', { vehicleType: selectedVehicleType }, function (slots) {
-    console.log ("here in the func..");
             if (slots != null && !jQuery.isEmptyObject(slots)) {
-                    console.log ("here in the inner..");
-                //parkingSlotSelect.append($('<option/>', {
-                //    value: null,
-                //    text: ""
-                //}));
                 $.each(slots, function (index, slots) {
-                        console.log ("here in the inner most loop..");
-                        console.log ("here text" + slots.text);
-                        console.log ("here value" + slots.value);
-
                 option = document.createElement('option');
                 option.setAttribute('value', slots.text);
                 option.appendChild(document.createTextNode(slots.text));
@@ -127,6 +118,7 @@ const getParkingSlot = () => {
 }
 vehicleTypeDropDown.addEventListener('change', getParkingSlot);
 
+vehicleTypeDropDown.addEventListener('load', resetVehicleType);
     
     </script>
 }
