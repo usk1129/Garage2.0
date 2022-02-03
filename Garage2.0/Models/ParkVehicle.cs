@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace Garage2._0.Models
 {
@@ -7,6 +8,9 @@ namespace Garage2._0.Models
         public int Id { get; set; }
         public VehicleType VehicleType { get; set; }
 
+        public int ParkingSlot { get; set; }
+//        public IEnumerable<SelectListItem> ParkingSlots { get; set; } 
+        
         [StringLength(30)]
         public string RegNumber { get; set; }
 
@@ -23,6 +27,5 @@ namespace Garage2._0.Models
         public int Wheels { get; set; }
         [Display(Name = "Check-In Time")]
         public DateTime  CheckInTime { get; set; }
-
     }
 }
