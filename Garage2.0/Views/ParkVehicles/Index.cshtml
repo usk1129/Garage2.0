@@ -4,6 +4,11 @@
     ViewData["Title"] = "Garage List";
 }
 
+
+@if ( TempData["Success"] != null ) 
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
 <h1>Garage List</h1>
 
 <form asp-action="Filter">
