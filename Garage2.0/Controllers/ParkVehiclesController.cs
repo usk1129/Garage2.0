@@ -213,12 +213,52 @@ namespace Garage2._0.Controllers
 
         private bool slotOccupied(string i, Dictionary<string, string> slotMap)
         {
+
             foreach (var item in slotMap)
             {
                 if (item.Key.Contains(i))
                     return true;
             }
             return false;
+        }
+
+        public async Task<IActionResult> GarageSlots()
+        {
+            int garageCapacity = 0;
+            var model = _context.ParkVehicle;
+            
+
+            Dictionary<int, string> currentSlots = new Dictionary<int, string>();
+            Dictionary<string, string> slotMap = GetExistingParkedVechiles();
+
+            if (int.TryParse(_configuration.GetSection("GarageCapacity").Value, out garageCapacity) is true)
+            {
+                if (garageCapacity > 0)
+                {
+                    for (int i = 1; i <= garageCapacity; i++)
+                    {
+                        if (slotOccupied(i.ToString(), slotMap))
+                        {
+                            currentSlots.Add(i, "Occupied");
+                        }
+                        else
+                        {
+                            currentSlots.Add(i, "Empty");
+                        }
+                    }
+                }
+            }
+
+            List<GarageSlotModel> slotCollection = new List<GarageSlotModel>();
+
+            foreach (var item in currentSlots)
+            {
+                slotCollection.Add(new GarageSlotModel { Capacity = garageCapacity, Slot = item.Key, Occupancy = item.Value });
+            }
+
+            return View(slotCollection.ToList());
+            //return View(nameof(Index), await model.ToListAsync());
+
         }
 
 
