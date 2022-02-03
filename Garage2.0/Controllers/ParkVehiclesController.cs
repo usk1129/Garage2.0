@@ -268,8 +268,8 @@ namespace Garage2._0.Controllers
             {
                 _context.ParkVehicle.Remove(parkVehicle);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = $"{parkVehicle.RegNumber} has been checked out!";
             }
-            TempData["Success"] = $"{parkVehicle.RegNumber} has been checked out!";
             return RedirectToAction(nameof(Index));
 
         }
