@@ -8,7 +8,7 @@ namespace Garage2._0.Models
         public int Id { get; set; }
         public VehicleType VehicleType { get; set; }
 
-        public int ParkingSlot { get; set; }
+        public string ParkingSlot { get; set; }
 //        public IEnumerable<SelectListItem> ParkingSlots { get; set; } 
         
         [StringLength(30)]
