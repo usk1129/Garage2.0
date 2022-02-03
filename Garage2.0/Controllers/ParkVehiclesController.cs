@@ -241,55 +241,38 @@ namespace Garage2._0.Controllers
                 switch (vehicleType)
                 {
                     case (int)VehicleType.Bus:
-                        if (currentSlots.Keys.Max() + 3 > garageCapacity)
-                            break;
                         nextSlot = $"{(currentSlots.Keys.Max() + 1).ToString()},{(currentSlots.Keys.Max() + 2).ToString()},{(currentSlots.Keys.Max() + 3).ToString()}";
-                        AddSlotSpecific(currentSlots, nextSlot, parkingSlots);
-
                         break;
                     case (int)VehicleType.Car:
-                        if (currentSlots.Keys.Max() + 1 > garageCapacity)
-                            break;
                         nextSlot = (currentSlots.Keys.Max() + 1).ToString();
-                        AddSlotSpecific(currentSlots, nextSlot, parkingSlots);
-
                         break;
                     case (int)VehicleType.Forklift:
-                        if (currentSlots.Keys.Max() + 1 > garageCapacity)
-                            break;
-
                         nextSlot = (currentSlots.Keys.Max() + 1).ToString();
-                        AddSlotSpecific(currentSlots, nextSlot, parkingSlots);
-
                         break;
                     case (int)VehicleType.Motorcycle:
-                        if (currentSlots.Keys.Max() + 1 > garageCapacity)
-                            break;
-
                         nextSlot = (currentSlots.Keys.Max() + 1).ToString();
-                        AddSlotSpecific(currentSlots, nextSlot, parkingSlots);
-
                         break;
                     case (int)VehicleType.Truck:
-                        if (currentSlots.Keys.Max() + 2 > garageCapacity)
-                            break;
-
                         nextSlot = $"{(currentSlots.Keys.Max() + 1).ToString()},{(currentSlots.Keys.Max() + 2).ToString()}";
-                        AddSlotSpecific(currentSlots, nextSlot, parkingSlots);
-
                         break;
                     case (int)VehicleType.Tractor:
-                        if (currentSlots.Keys.Max() + 1 > garageCapacity)
-                            break;
-
                         nextSlot = (currentSlots.Keys.Max() + 1).ToString();
-                        AddSlotSpecific(currentSlots, nextSlot, parkingSlots);
-
                         break;
 
                 }
+
+                parkingSlots.Add
+                    (
+                        new SelectListItem
+                        {
+                            Value = $"{currentSlots.Keys.Max() + 1}",
+                            Text = nextSlot
+                        }
+                    ) ;
+
+
             }
-            if (nextSlot.Equals("-1"))
+            else
             {
                 parkingSlots.Add
                     (
@@ -304,18 +287,6 @@ namespace Garage2._0.Controllers
 
 
             return parkingSlots;
-        }
-
-        private static void AddSlotSpecific(Dictionary<int, string> currentSlots, string nextSlot, List<SelectListItem> parkingSlots)
-        {
-            parkingSlots.Add
-                (
-                    new SelectListItem
-                    {
-                        Value = $"{currentSlots.Keys.Max() + 1}",
-                        Text = nextSlot
-                    }
-                );
         }
 
         // GET: ParkVehicles/Edit/5
