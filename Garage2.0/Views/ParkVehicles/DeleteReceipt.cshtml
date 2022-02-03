@@ -6,6 +6,11 @@
 
 <h1>Receipt</h1>
 
+@if ( ViewData["Success"] != null ) 
+{
+    <div class="alert alert-success">@ViewData["Success"]</div>
+}
+
 <div>
     <h4>Receipt details</h4>
     <hr />
