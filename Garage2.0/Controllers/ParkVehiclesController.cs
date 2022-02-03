@@ -121,10 +121,6 @@ namespace Garage2._0.Controllers
 
         }
 
-
-
-
-
         // GET: ParkVehicles/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -149,6 +145,7 @@ namespace Garage2._0.Controllers
             return View();
         }
 
+
         // POST: ParkVehicles/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -172,6 +169,20 @@ namespace Garage2._0.Controllers
                 return View();
             }
             return View(parkVehicle);
+        }
+
+        [HttpGet]
+        public ActionResult GetParkingSlots(int vehicleType)
+        {
+            var repo = new ParkingSlotRepository();
+
+            IEnumerable<SelectListItem> slots = repo.GetParkingSlots(vehicleType);
+                return Json(slots);
+        }
+
+        private bool PopulateParkingSlots(VehicleType vehicleType)
+        {
+            return false;
         }
 
         // GET: ParkVehicles/Edit/5
