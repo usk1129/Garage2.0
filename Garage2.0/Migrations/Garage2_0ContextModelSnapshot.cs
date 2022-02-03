@@ -65,7 +65,7 @@ namespace Garage2._0.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ParkVehicle");
+                    b.ToTable("ParkVehicle", (string)null);
                 });
 #pragma warning restore 612, 618
         }

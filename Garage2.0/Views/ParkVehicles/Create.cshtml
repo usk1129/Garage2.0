@@ -69,7 +69,7 @@
                 <span asp-validation-for="CheckInTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Park" class="btn btn-primary" id="SubmitId"/>
+                <input type="submit" value="Park" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -115,15 +115,6 @@ const getParkingSlot = () => {
                 option.appendChild(document.createTextNode(slots.text));
                 parkingSlotSelect.append(option);
 
-                if (slots.value === "-1")
-                {
-                    document.querySelector('#SubmitId').disabled = true;
-                }
-                else 
-                {
-                    document.querySelector('#SubmitId').disabled = false;
-
-                }
                 });
             };
         });
