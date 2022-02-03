@@ -51,6 +51,7 @@ namespace Garage2._0.Controllers
             return View(nameof(Index), await model.ToListAsync());
         }
 
+
         public async Task<IActionResult> Index(string searchString,string sortOrder)
         {
             ViewBag.VehicleSortParm = String.IsNullOrEmpty(sortOrder) ? "vehicle_desc" : "";
@@ -59,7 +60,7 @@ namespace Garage2._0.Controllers
             ViewBag.BrandSortParm = sortOrder == "Brand" ? "Brand_desc" : "Brand";
             ViewBag.ModelSortParm = sortOrder == "Model" ? "Model_desc" : "Model";
             ViewBag.WheelsSortParm = sortOrder == "Wheels" ? "Wheels_desc" : "Wheels";
-            ViewBag.CheckInTimeSortParm = sortOrder == "CheckInTime" ? "CheckInTime_desc" : "CheckInTime";
+            ViewBag.CheckInTimeSortParm = sortOrder == "Date" ? "CheckInTime_desc" : "Date";
 
             var vehicles = from v in _context.ParkVehicle
                            select v;
@@ -105,7 +106,7 @@ namespace Garage2._0.Controllers
                 case "Wheels_desc":
                     vehicles = vehicles.OrderByDescending(v => v.Wheels);
                     break;
-                case "CheckInTime":
+                case "Date":
                     vehicles = vehicles.OrderBy(v => v.CheckInTime);
                     break;
                 case "CheckInTime_desc":
@@ -117,9 +118,6 @@ namespace Garage2._0.Controllers
                     break;
             }
             return View(await vehicles.AsNoTracking().ToListAsync());
-
-
-
         }
 
 
@@ -158,21 +156,26 @@ namespace Garage2._0.Controllers
         public async Task<IActionResult> Create([Bind("Id,VehicleType,RegNumber,Color,Brand,Model,Wheels,CheckInTime")] ParkVehicle parkVehicle)
         {
             var regNrDuplicate = await _context.ParkVehicle.FirstOrDefaultAsync(x => x.RegNumber == parkVehicle.RegNumber);
-            if (ModelState.IsValid)
+
+            var modelValid = ModelState.IsValid;
+        
+            if (modelValid)
             {
 
-               if (regNrDuplicate == default)
+                if (regNrDuplicate == default)
                 {
                     parkVehicle.CheckInTime = DateTime.Now;
                     _context.Add(parkVehicle);
                     await _context.SaveChangesAsync();
+                    TempData["Success"] = $"{parkVehicle.RegNumber} is successfully parked";
                     return RedirectToAction(nameof(Index));
-
                 }
-
                 ModelState.AddModelError(nameof(parkVehicle.RegNumber), "The RegNr needs to be unique!");
+                ModelState.AddModelError("", "Could not park, something went wrong!");
                 return View();
             }
+            
+
             return View(parkVehicle);
         }
 
@@ -199,6 +202,7 @@ namespace Garage2._0.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,VehicleType,RegNumber,Color,Brand,Model,Wheels,CheckInTime")] ParkVehicle parkVehicle)
         {
+
             if (id != parkVehicle.Id)
             {
                 return NotFound();
@@ -225,10 +229,11 @@ namespace Garage2._0.Controllers
                         }
                     }
 
-
+                    TempData["Success"] = $"{parkVehicle.RegNumber} is successfully edited";
                     return RedirectToAction(nameof(Index));
                 }
                 ModelState.AddModelError(nameof(parkVehicle.RegNumber), "The RegNr needs to be unique!");
+                ModelState.AddModelError("", "Could not edit, something went wrong!");
                 return View();
             }
             return View(parkVehicle);
@@ -264,6 +269,7 @@ namespace Garage2._0.Controllers
                 _context.ParkVehicle.Remove(parkVehicle);
                 await _context.SaveChangesAsync();
             }
+            TempData["Success"] = $"{parkVehicle.RegNumber} has been checked out!";
             return RedirectToAction(nameof(Index));
 
         }
@@ -295,6 +301,7 @@ namespace Garage2._0.Controllers
 
                 _context.ParkVehicle.Remove(parkVehicle);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = $"{parkVehicle.RegNumber} has successfully been checked out!";
                 return View(receipt);
 
             }
