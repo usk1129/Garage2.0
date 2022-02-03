@@ -34,11 +34,11 @@ namespace Garage2._0.Controllers
 
             model = string.IsNullOrWhiteSpace(brandSearch) ?
                           model :
-                          model.Where(m => m.Color.Contains(brandSearch));
+                          model.Where(m => m.Brand.Contains(brandSearch));
 
             model = string.IsNullOrWhiteSpace(modelSearch) ?
                           model :
-                          model.Where(m => m.Color.Contains(modelSearch));
+                          model.Where(m => m.Model.Contains(modelSearch));
 
             model = wheelSearch == null ?
                  model :
