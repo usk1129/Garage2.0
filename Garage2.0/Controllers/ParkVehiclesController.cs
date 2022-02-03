@@ -155,10 +155,12 @@ namespace Garage2._0.Controllers
         public async Task<IActionResult> Create([Bind("Id,VehicleType,RegNumber,Color,Brand,Model,Wheels,CheckInTime")] ParkVehicle parkVehicle)
         {
             var regNrDuplicate = await _context.ParkVehicle.FirstOrDefaultAsync(x => x.RegNumber == parkVehicle.RegNumber);
-            if (ModelState.IsValid)
-            {
 
-               if (regNrDuplicate == default)
+            var modelValid = ModelState.IsValid;
+
+            if (modelValid)
+            {
+                if (regNrDuplicate == default)
                 {
                     parkVehicle.CheckInTime = DateTime.Now;
                     _context.Add(parkVehicle);
@@ -168,8 +170,10 @@ namespace Garage2._0.Controllers
                 }
 
                 ModelState.AddModelError(nameof(parkVehicle.RegNumber), "The RegNr needs to be unique!");
+                ModelState.AddModelError("", "Could not be parked");
                 return View();
             }
+            TempData["Success"] = true;
             return View(parkVehicle);
         }
 
@@ -196,6 +200,7 @@ namespace Garage2._0.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,VehicleType,RegNumber,Color,Brand,Model,Wheels,CheckInTime")] ParkVehicle parkVehicle)
         {
+
             if (id != parkVehicle.Id)
             {
                 return NotFound();
@@ -226,6 +231,7 @@ namespace Garage2._0.Controllers
                     return RedirectToAction(nameof(Index));
                 }
                 ModelState.AddModelError(nameof(parkVehicle.RegNumber), "The RegNr needs to be unique!");
+                ModelState.AddModelError("", "Could not be edited");
                 return View();
             }
             return View(parkVehicle);
