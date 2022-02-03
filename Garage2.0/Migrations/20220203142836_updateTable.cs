@@ -4,7 +4,7 @@
 
 namespace Garage2._0.Migrations
 {
-    public partial class Change : Migration
+    public partial class updateTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

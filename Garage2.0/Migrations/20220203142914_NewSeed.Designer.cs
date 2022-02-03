@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garage2._0.Migrations
 {
     [DbContext(typeof(Garage2_0Context))]
-    [Migration("20220203124241_Change")]
-    partial class Change
+    [Migration("20220203142914_NewSeed")]
+    partial class NewSeed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
