@@ -288,6 +288,12 @@ namespace Garage2._0.Controllers
             {
                 slotFound = false;
                 nextSlot = "";
+                //already peeking at the end with more space needed. so not found
+                if (i + consecutiveSlotsNeeded > garageCapacity)
+                {
+                    slotFound = false;
+                    break;
+                }
                 for (int j = 0; j < consecutiveSlotsNeeded; j++)
                 {
                     if (currentSlots.ElementAt(i + j).Value.Equals("Empty"))
@@ -308,6 +314,7 @@ namespace Garage2._0.Controllers
                 }
             }
 
+            nextSlot = nextSlot.TrimStart(',');
             if (slotFound is false)
             {
                 parkingSlots.Add
