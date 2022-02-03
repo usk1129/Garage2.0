@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage2._0.Data;
 using Garage2._0.Models;
+using Garage2._0.Helpers;
 
 namespace Garage2._0.Controllers
 {
@@ -51,15 +52,16 @@ namespace Garage2._0.Controllers
             return View(nameof(Index), await model.ToListAsync());
         }
 
+
         public async Task<IActionResult> Index(string searchString, string sortOrder)
         {
-            ViewBag.VehicleSortParm = sortOrder == "Vehicle Type" ? "vehicle_desc" : "Vehicle Type";
+            ViewBag.VehicleSortParm = String.IsNullOrEmpty(sortOrder) ? "vehicle_desc" : "";
             ViewBag.RegNumberSortParm = sortOrder == "RegNumber" ? "RegNumber_desc" : "RegNumber";
             ViewBag.ColorSortParm = sortOrder == "Color" ? "Color_desc" : "Color";
             ViewBag.BrandSortParm = sortOrder == "Brand" ? "Brand_desc" : "Brand";
             ViewBag.ModelSortParm = sortOrder == "Model" ? "Model_desc" : "Model";
             ViewBag.WheelsSortParm = sortOrder == "Wheels" ? "Wheels_desc" : "Wheels";
-            ViewBag.CheckInTimeSortParm = sortOrder == "CheckInTime" ? "CheckInTime_desc" : "CheckInTime";
+            ViewBag.CheckInTimeSortParm = sortOrder == "Date" ? "CheckInTime_desc" : "Date";
 
             var vehicles = from v in _context.ParkVehicle
                            select v;
@@ -105,21 +107,17 @@ namespace Garage2._0.Controllers
                 case "Wheels_desc":
                     vehicles = vehicles.OrderByDescending(v => v.Wheels);
                     break;
-                case "CheckInTime":
+                case "Date":
                     vehicles = vehicles.OrderBy(v => v.CheckInTime);
                     break;
                 case "CheckInTime_desc":
                     vehicles = vehicles.OrderByDescending(v => v.CheckInTime);
                     break;
-
                 default:
                     vehicles = vehicles.OrderBy(v => v.VehicleType);
                     break;
             }
-
-            return View(await vehicles.ToListAsync());
-
-
+            return View(await vehicles.AsNoTracking().ToListAsync());
         }
 
         // GET: ParkVehicles/Details/5
@@ -155,20 +153,26 @@ namespace Garage2._0.Controllers
         public async Task<IActionResult> Create([Bind("Id,VehicleType,ParkingSlot,RegNumber,Color,Brand,Model,Wheels,CheckInTime")] ParkVehicle parkVehicle)
         {
             var regNrDuplicate = await _context.ParkVehicle.FirstOrDefaultAsync(x => x.RegNumber == parkVehicle.RegNumber);
-            if (ModelState.IsValid)
+
+            var modelValid = ModelState.IsValid;
+        
+            if (modelValid)
             {
 
                 if (regNrDuplicate == default)
                 {
+                    parkVehicle.CheckInTime = DateTime.Now;
                     _context.Add(parkVehicle);
                     await _context.SaveChangesAsync();
+                    TempData["Success"] = $"{parkVehicle.RegNumber} is successfully parked";
                     return RedirectToAction(nameof(Index));
-
                 }
-
                 ModelState.AddModelError(nameof(parkVehicle.RegNumber), "The RegNr needs to be unique!");
+                ModelState.AddModelError("", "Could not park, something went wrong!");
                 return View();
             }
+            
+
             return View(parkVehicle);
         }
 
@@ -341,6 +345,7 @@ namespace Garage2._0.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,VehicleType,ParkingSlot, RegNumber,Color,Brand,Model,Wheels,CheckInTime")] ParkVehicle parkVehicle)
         {
+
             if (id != parkVehicle.Id)
             {
                 return NotFound();
@@ -367,10 +372,11 @@ namespace Garage2._0.Controllers
                         }
                     }
 
-
+                    TempData["Success"] = $"{parkVehicle.RegNumber} is successfully edited";
                     return RedirectToAction(nameof(Index));
                 }
                 ModelState.AddModelError(nameof(parkVehicle.RegNumber), "The RegNr needs to be unique!");
+                ModelState.AddModelError("", "Could not edit, something went wrong!");
                 return View();
             }
             return View(parkVehicle);
@@ -405,6 +411,7 @@ namespace Garage2._0.Controllers
             {
                 _context.ParkVehicle.Remove(parkVehicle);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = $"{parkVehicle.RegNumber} has been checked out!";
             }
             return RedirectToAction(nameof(Index));
 
@@ -415,10 +422,9 @@ namespace Garage2._0.Controllers
         public async Task<IActionResult> Receipt(int id)
         {
             var currentTime = DateTime.Now;
-            var priceRate = 1;
             var parkVehicle = await _context.ParkVehicle
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (parkVehicle != null)
+            if (parkVehicle != default)
             {
                 var receipt = new ReceiptViewModel
                 {
@@ -432,16 +438,61 @@ namespace Garage2._0.Controllers
                     CheckInTime = parkVehicle.CheckInTime,
                     CheckOutTime = currentTime,
                     ParkedTime = currentTime - parkVehicle.CheckInTime,
-                    Price = 5 + (int)(currentTime - parkVehicle.CheckInTime).TotalMinutes * priceRate
+                    Price = CalcPrice(parkVehicle.CheckInTime, currentTime)
 
                 };
 
                 _context.ParkVehicle.Remove(parkVehicle);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = $"{parkVehicle.RegNumber} has successfully been checked out!";
                 return View(receipt);
 
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        private int CalcPrice(DateTime checkInTime, DateTime currentTime)
+        { 
+        int priceRate = 1;           
+        return 5 + (int)(currentTime - checkInTime).TotalMinutes * priceRate;
+        }
+
+        public async Task<IActionResult> Statistics()
+        {
+
+            int wheels = 0;
+            int totalVehicles = 0;
+            int currentFees = 0;
+            var currentTime = DateTime.Now;
+
+           List<VehicleTypeHelper> vehicleTypeAmounts = await _context.ParkVehicle.GroupBy(t => t.VehicleType)
+                                       .Select(t => new VehicleTypeHelper
+                                       {
+                                           Category = t.Key,
+                                           Count = t.Count()                                           
+                                       }).ToListAsync();
+
+
+
+            await _context.ParkVehicle.ForEachAsync(x => { 
+                                        wheels += x.Wheels; 
+                                        totalVehicles += 1;
+                                        currentFees += CalcPrice(x.CheckInTime, currentTime);
+                                        
+             });
+
+            var viewModel = new StatisticsViewModel
+            {
+                VehicleTypeAmount = vehicleTypeAmounts,
+                AmountOfWheels = wheels,
+                AmountOfVehicles = totalVehicles,
+                CurrentFees = currentFees
+
+            };
+            
+   
+
+            return View(viewModel);
         }
 
         private bool ParkVehicleExists(int id)
