@@ -305,7 +305,6 @@ namespace Garage2._0.Controllers
                 return View(receipt);
 
             }
-            TempData["Success"] = $"{parkVehicle.RegNumber} has successfully been checked out";
             return RedirectToAction(nameof(Index));
         }
 
