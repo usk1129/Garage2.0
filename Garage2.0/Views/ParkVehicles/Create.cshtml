@@ -94,10 +94,10 @@ const getParkingSlot = () => {
     console.log ("here in the func..");
             if (slots != null && !jQuery.isEmptyObject(slots)) {
                     console.log ("here in the inner..");
-                parkingSlotSelect.append($('<option/>', {
-                    value: null,
-                    text: ""
-                }));
+                //parkingSlotSelect.append($('<option/>', {
+                //    value: null,
+                //    text: ""
+                //}));
                 $.each(slots, function (index, slots) {
                         console.log ("here in the inner most loop..");
                         console.log ("here text" + slots.text);

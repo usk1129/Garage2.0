@@ -14,7 +14,6 @@ namespace Garage2._0.Controllers
     public class ParkVehiclesController : Controller
     {
         private readonly Garage2_0Context _context;
-
         public ParkVehiclesController(Garage2_0Context context)
         {
             _context = context;
@@ -174,10 +173,73 @@ namespace Garage2._0.Controllers
         [HttpGet]
         public ActionResult GetParkingSlots(int vehicleType)
         {
-            var repo = new ParkingSlotRepository();
-
-            IEnumerable<SelectListItem> slots = repo.GetParkingSlots(vehicleType);
+            IEnumerable<SelectListItem> slots = GetSlots(vehicleType);
                 return Json(slots);
+        }
+
+        private Dictionary<string, string> GetExistingParkedVechiles()
+        {
+
+            Dictionary<string, string> slotMap = new Dictionary<string, string>();
+
+            var vehicles = from v in _context.ParkVehicle
+                           select v;
+            vehicles = vehicles.OrderByDescending(v => v.ParkingSlot);
+
+            slotMap = vehicles.ToDictionary(v => v.RegNumber, v => v.ParkingSlot.ToString());
+
+            return slotMap;
+
+        }
+
+        private IEnumerable<SelectListItem> GetSlots(int vehicleType)
+        {
+            List<SelectListItem> parkingSlots = new List<SelectListItem>();
+
+            Dictionary<string, string> slotMap = GetExistingParkedVechiles();
+
+            if (IfParkingPossible(vehicleType, slotMap))
+            {
+                parkingSlots = GetFreeSlots(vehicleType, slotMap);    
+            }
+            else
+            {
+                parkingSlots.Clear();
+                parkingSlots.Add
+                (
+                    new SelectListItem
+                    {
+                        Value = "-1",
+                        Text = "Not Possible to park " + Enum.GetName(typeof(VehicleType), vehicleType) 
+                    }
+                );
+            }
+            //foreach (var item in slotMap)
+            //{
+            //    Console.WriteLine($"slot Number: {item.Key}, vehicles: {item.Value}");
+            //    parkingSlots.Add
+            //    (
+            //        new SelectListItem
+            //        {
+            //            Value = item.Key,
+            //            Text = item.Value
+            //        }
+            //    );
+
+            //}
+
+            return parkingSlots;
+
+        }
+
+        private List<SelectListItem> GetFreeSlots(int vehicleType, Dictionary<string, string> slotMap)
+        {
+            return null;
+        }
+
+        private bool IfParkingPossible(int vehicleType, Dictionary<string, string> slotMap)
+        {
+            return false;
         }
 
         private bool PopulateParkingSlots(VehicleType vehicleType)
