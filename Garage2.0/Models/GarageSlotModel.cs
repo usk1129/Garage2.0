@@ -8,13 +8,10 @@ namespace Garage2._0.Models
         [Display(Name = "Garage Capacity")]
         public int Capacity { get; set; }
 
-
         [Display(Name = "Garage Slot")]
         public int Slot { get; set; }
 
         [Display(Name = "Occupancy Status")]
         public string Occupancy { get; set; }
-
-
     }
 }
