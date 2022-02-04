@@ -55,6 +55,7 @@ namespace Garage2._0.Controllers
         public async Task<IActionResult> Index(string searchString, string sortOrder)
         {
             ViewBag.VehicleSortParm = String.IsNullOrEmpty(sortOrder) ? "vehicle_desc" : "";
+            ViewBag.ParkingSortParm = String.IsNullOrEmpty(sortOrder) ? "park_desc" : "";
             ViewBag.RegNumberSortParm = sortOrder == "RegNumber" ? "RegNumber_desc" : "RegNumber";
             ViewBag.ColorSortParm = sortOrder == "Color" ? "Color_desc" : "Color";
             ViewBag.BrandSortParm = sortOrder == "Brand" ? "Brand_desc" : "Brand";
@@ -75,6 +76,9 @@ namespace Garage2._0.Controllers
             {
                 case "vehicle_desc":
                     vehicles = vehicles.OrderByDescending(v => v.VehicleType);
+                    break;
+                case "park_desc":
+                    vehicles = vehicles.OrderByDescending(v => v.ParkingSlot);
                     break;
                 case "RegNumber":
                     vehicles = vehicles.OrderBy(v => v.RegNumber);
@@ -167,6 +171,8 @@ namespace Garage2._0.Controllers
                     TempData["Success"] = $"{parkVehicle.RegNumber} is successfully parked";
                     return RedirectToAction(nameof(Index));
                 }
+
+                ModelState.Clear();
                 ModelState.AddModelError(nameof(parkVehicle.RegNumber), "The RegNr needs to be unique!");
                 ModelState.AddModelError("", "Could not park, something went wrong!");
                 return View();
