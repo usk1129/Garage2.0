@@ -167,6 +167,8 @@ namespace Garage2._0.Controllers
                     TempData["Success"] = $"{parkVehicle.RegNumber} is successfully parked";
                     return RedirectToAction(nameof(Index));
                 }
+
+                ModelState.Clear();
                 ModelState.AddModelError(nameof(parkVehicle.RegNumber), "The RegNr needs to be unique!");
                 ModelState.AddModelError("", "Could not park, something went wrong!");
                 return View();
