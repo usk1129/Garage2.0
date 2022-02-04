@@ -34,11 +34,11 @@ namespace Garage2._0.Controllers
 
             model = string.IsNullOrWhiteSpace(brandSearch) ?
                           model :
-                          model.Where(m => m.Color.Contains(brandSearch));
+                          model.Where(m => m.Brand.Contains(brandSearch));
 
             model = string.IsNullOrWhiteSpace(modelSearch) ?
                           model :
-                          model.Where(m => m.Color.Contains(modelSearch));
+                          model.Where(m => m.Model.Contains(modelSearch));
 
             model = wheelSearch == null ?
                  model :
@@ -192,6 +192,7 @@ namespace Garage2._0.Controllers
                            select v;
             vehicles = vehicles.OrderByDescending(v => v.ParkingSlot);
 
+            
             slotMap = vehicles.ToDictionary(v => v.ParkingSlot.ToString(), v => v.VehicleType.ToString());
 
             return slotMap;
@@ -210,8 +211,64 @@ namespace Garage2._0.Controllers
 
         }
 
+        private bool slotOccupied(string i, Dictionary<string, string> slotMap)
+        {
+
+            foreach (var item in slotMap)
+            {
+                string[] slots = item.Key.Split(',');
+                for (int j = 0; j < slots.Length; j++)
+                {
+                    if (slots[j].Equals(i))
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        public async Task<IActionResult> GarageSlots()
+        {
+            int garageCapacity = 0;
+            var model = _context.ParkVehicle;
+            
+
+            Dictionary<int, string> currentSlots = new Dictionary<int, string>();
+            Dictionary<string, string> slotMap = GetExistingParkedVechiles();
+
+            if (int.TryParse(_configuration.GetSection("GarageCapacity").Value, out garageCapacity) is true)
+            {
+                if (garageCapacity > 0)
+                {
+                    for (int i = 1; i <= garageCapacity; i++)
+                    {
+                        if (slotOccupied(i.ToString(), slotMap))
+                        {
+                            currentSlots.Add(i, "Occupied");
+                        }
+                        else
+                        {
+                            currentSlots.Add(i, "Empty");
+                        }
+                    }
+                }
+            }
+
+            List<GarageSlotModel> slotCollection = new List<GarageSlotModel>();
+
+            foreach (var item in currentSlots)
+            {
+                slotCollection.Add(new GarageSlotModel { Capacity = garageCapacity, Slot = item.Key, Occupancy = item.Value });
+            }
+
+            return View(slotCollection.ToList());
+            //return View(nameof(Index), await model.ToListAsync());
+
+        }
+
+
         private List<SelectListItem> GetFreeSlots(int vehicleType, Dictionary<string, string> slotMap)
         {
+
             List<SelectListItem> parkingSlots = new List<SelectListItem>();
             int garageCapacity = -1;
             Dictionary<int, string> currentSlots = new Dictionary<int, string>();
@@ -222,78 +279,87 @@ namespace Garage2._0.Controllers
                 {
                     for (int i = 1; i <= garageCapacity; i++)
                     {
-                        if (slotMap.ContainsKey(i.ToString()))
+                        if (slotOccupied(i.ToString(), slotMap)) 
                         {
-                            currentSlots.Add(i, slotMap[i.ToString()]);
+                            currentSlots.Add(i, "Occupied");
+                        }
+                        else
+                        {
+                            currentSlots.Add(i, "Empty");
                         }
                     }
                 }
             }
 
-            parkingSlots = GetNextAvailableSlot(vehicleType, currentSlots, garageCapacity);
+           // GarageSlots gSlots = new GarageSlots(garageCapacity, currentSlots);
+            
+            switch (vehicleType)
+            {
+                case (int)VehicleType.Bus:
+                    parkingSlots = GetNextAvailableSlot(3, currentSlots, garageCapacity, vehicleType);
+                    break;
+                case (int)VehicleType.Car:
+                    parkingSlots = GetNextAvailableSlot(1, currentSlots, garageCapacity, vehicleType);
+                    break;
+                case (int)VehicleType.Forklift:
+                    parkingSlots = GetNextAvailableSlot(1, currentSlots, garageCapacity, vehicleType);
+                    break;
+                case (int)VehicleType.Motorcycle:
+                    parkingSlots = GetNextAvailableSlot(1, currentSlots, garageCapacity, vehicleType);
+                    break;
+                case (int)VehicleType.Truck:
+                    parkingSlots = GetNextAvailableSlot(2, currentSlots, garageCapacity, vehicleType);
+                    break;
+                case (int)VehicleType.Tractor:
+                    parkingSlots = GetNextAvailableSlot(2, currentSlots, garageCapacity, vehicleType);
+                    break;
+
+            }
             return parkingSlots;
+
         }
 
-        private List<SelectListItem> GetNextAvailableSlot(int vehicleType, Dictionary<int, string> currentSlots, int garageCapacity)
+
+        private List<SelectListItem> GetNextAvailableSlot(int consecutiveSlotsNeeded, Dictionary<int, string> currentSlots, int garageCapacity, int vehicleType)
         {
-            string nextSlot = "-1";
+            string nextSlot = "";
+            bool slotFound = false;
+
             List<SelectListItem> parkingSlots = new List<SelectListItem>();
             parkingSlots.Clear();
 
-            if (currentSlots.Count < garageCapacity)
+            for (int i = 0; i < currentSlots.Count; i++)
             {
-                switch (vehicleType)
+                slotFound = false;
+                nextSlot = "";
+                //already peeking at the end with more space needed. so not found
+                if (i + consecutiveSlotsNeeded > garageCapacity)
                 {
-                    case (int)VehicleType.Bus:
-                        if (currentSlots.Keys.Max() + 3 > garageCapacity)
-                            break;
-                        nextSlot = $"{(currentSlots.Keys.Max() + 1).ToString()},{(currentSlots.Keys.Max() + 2).ToString()},{(currentSlots.Keys.Max() + 3).ToString()}";
-                        AddSlotSpecific(currentSlots, nextSlot, parkingSlots);
-
+                    slotFound = false;
+                    break;
+                }
+                for (int j = 0; j < consecutiveSlotsNeeded; j++)
+                {
+                    if (currentSlots.ElementAt(i + j).Value.Equals("Empty"))
+                    {
+                        slotFound = true;
+                        nextSlot += "," + currentSlots.ElementAt(i + j).Key;
+                    }
+                    else
+                    {
+                        slotFound = false;
                         break;
-                    case (int)VehicleType.Car:
-                        if (currentSlots.Keys.Max() + 1 > garageCapacity)
-                            break;
-                        nextSlot = (currentSlots.Keys.Max() + 1).ToString();
-                        AddSlotSpecific(currentSlots, nextSlot, parkingSlots);
-
-                        break;
-                    case (int)VehicleType.Forklift:
-                        if (currentSlots.Keys.Max() + 1 > garageCapacity)
-                            break;
-
-                        nextSlot = (currentSlots.Keys.Max() + 1).ToString();
-                        AddSlotSpecific(currentSlots, nextSlot, parkingSlots);
-
-                        break;
-                    case (int)VehicleType.Motorcycle:
-                        if (currentSlots.Keys.Max() + 1 > garageCapacity)
-                            break;
-
-                        nextSlot = (currentSlots.Keys.Max() + 1).ToString();
-                        AddSlotSpecific(currentSlots, nextSlot, parkingSlots);
-
-                        break;
-                    case (int)VehicleType.Truck:
-                        if (currentSlots.Keys.Max() + 2 > garageCapacity)
-                            break;
-
-                        nextSlot = $"{(currentSlots.Keys.Max() + 1).ToString()},{(currentSlots.Keys.Max() + 2).ToString()}";
-                        AddSlotSpecific(currentSlots, nextSlot, parkingSlots);
-
-                        break;
-                    case (int)VehicleType.Tractor:
-                        if (currentSlots.Keys.Max() + 1 > garageCapacity)
-                            break;
-
-                        nextSlot = (currentSlots.Keys.Max() + 1).ToString();
-                        AddSlotSpecific(currentSlots, nextSlot, parkingSlots);
-
-                        break;
-
+                    }
+                }
+                if (slotFound)
+                {
+                    //found it
+                    break;
                 }
             }
-            if (nextSlot.Equals("-1"))
+
+            nextSlot = nextSlot.TrimStart(',');
+            if (slotFound is false)
             {
                 parkingSlots.Add
                     (
@@ -303,23 +369,19 @@ namespace Garage2._0.Controllers
                             Text = "Not Possible to park " + Enum.GetName(typeof(VehicleType), vehicleType)
                         }
                     );
-
             }
-
-
+            else
+            {
+                parkingSlots.Add
+                    (
+                        new SelectListItem
+                        {
+                            Value =  nextSlot,
+                            Text = nextSlot
+                        }
+                    );
+            }
             return parkingSlots;
-        }
-
-        private static void AddSlotSpecific(Dictionary<int, string> currentSlots, string nextSlot, List<SelectListItem> parkingSlots)
-        {
-            parkingSlots.Add
-                (
-                    new SelectListItem
-                    {
-                        Value = $"{currentSlots.Keys.Max() + 1}",
-                        Text = nextSlot
-                    }
-                );
         }
 
         // GET: ParkVehicles/Edit/5
