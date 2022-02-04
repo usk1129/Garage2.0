@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Garage2._0.Models.GarageSlotModel>
+
+@{
+    ViewData["Title"] = "Garage Slots";
+}
+
+<h1>Garage Parking Slots Details</h1>
+
+<div>
+    <h4>Slot Occupancy </h4>
+    <hr />
+<div class="table-responsive col m-3 ">
+    <table class="table table caption-top table-bordered table-hover table-primary ">
+        <caption> Garage Slots </caption>
+        <thead>
+            <tr>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.Slot)
+                </th>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.Occupancy)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Slot)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Occupancy)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
