@@ -6,8 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<Garage2_0Context>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Garage2_0Context")));
 
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//builder.Services.AddTransient<IParkingSlotRepository, ParkingSlotRepository>();
 
 var app = builder.Build();
 

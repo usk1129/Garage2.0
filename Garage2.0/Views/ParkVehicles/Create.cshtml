@@ -21,11 +21,23 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="VehicleType" class="control-label"></label>
-                <select asp-for="VehicleType" class="form-control"
-                        asp-items="Html.GetEnumSelectList<VehicleType>()">
+                <select asp-for="VehicleType" class="form-control" id="VehicleTypeId" 
+                        asp-items="Html.GetEnumSelectList<VehicleType>()" >
+                            <option value="">Choose vehicle type</option>
                 </select>
                 <span asp-validation-for="VehicleType" class="text-danger"></span>
             </div>
+            
+            <div class="form-group">
+                <label asp-for="ParkingSlot" class="control-label" ></label>
+                <select asp-for="ParkingSlot" class="form-control" id="ParkingSlotId"
+                        ;">
+                    <option value="">First Choose Vehicle Type</option>
+                </select>
+                <span asp-validation-for="VehicleType" class="text-danger"></span>
+            </div>
+  
+
             <div class="form-group">
                 <label asp-for="RegNumber" class="control-label"></label>
                 <input asp-for="RegNumber" class="form-control" />
@@ -52,7 +64,7 @@
                 <span asp-validation-for="Wheels" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Park" class="btn btn-primary" />
+                <input type="submit" value="Park" class="btn btn-primary" id="SubmitId"/>
             </div>
         </form>
     </div>
@@ -65,5 +77,50 @@
 @section Scripts {
     @{
     await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    <script type="text/javascript">
+
+
+const vehicleTypeDropDown = document.querySelector('#VehicleTypeId');
+
+const resetVehicleType = () => {
+    vehicleTypeDropDown.selected = false;
+    vehicleTypeDropDown.SelectedIndex = -1;
+}
+
+const getParkingSlot = () => {
+
+    var selectedVehicleType = $("#VehicleTypeId").val();
+    var parkingSlotSelect = $('#ParkingSlotId');
+    parkingSlotSelect.empty();
+    if (selectedVehicleType != null && selectedVehicleType != '') {
+        $.getJSON('@Url.Action("GetParkingSlots")', { vehicleType: selectedVehicleType }, function (slots) {
+            if (slots != null && !jQuery.isEmptyObject(slots)) {
+                $.each(slots, function (index, slots) {
+                option = document.createElement('option');
+                option.setAttribute('value', slots.text);
+                option.appendChild(document.createTextNode(slots.text));
+                parkingSlotSelect.append(option);
+
+                if (slots.value === "-1")
+                {
+                    document.querySelector('#SubmitId').disabled = true;
+                }
+                else 
+                {
+                    document.querySelector('#SubmitId').disabled = false;
+
+                }
+                });
+            };
+        });
+    }
+
+}
+vehicleTypeDropDown.addEventListener('change', getParkingSlot);
+
+vehicleTypeDropDown.addEventListener('load', resetVehicleType);
+    
+    </script>
 }
 }
+
