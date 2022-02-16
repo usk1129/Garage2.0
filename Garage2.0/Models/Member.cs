@@ -13,7 +13,7 @@
         public int Age { get; set; }
 
         // Nav Prop
-        public ICollection<ParkVehicle> Vehicles { get; set; } = new List<ParkVehicle>();
+        public virtual ICollection<ParkVehicle> Vehicles { get; set; } = new List<ParkVehicle>();
 
     }
 }
