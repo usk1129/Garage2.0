@@ -36,5 +36,8 @@ namespace Garage2._0.Models
 
         // Nav Prop
         public virtual Member Member { get; set; }
+
+
+        public ICollection<ParkingSpot> ParkingSpots { get; set; }
     }
 }
