@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Garage2._0.Models
 {
@@ -27,5 +28,13 @@ namespace Garage2._0.Models
         public int Wheels { get; set; }
         [Display(Name = "Check-In Time")]
         public DateTime  CheckInTime { get; set; }
+
+        //[ForeignKey("Member")]
+
+        // Foreign Key
+        public int MemberId { get; set; }
+
+        // Nav Prop
+        public virtual Member Member { get; set; }
     }
 }
