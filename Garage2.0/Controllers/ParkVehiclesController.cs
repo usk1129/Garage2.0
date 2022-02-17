@@ -136,6 +136,7 @@ namespace Garage2._0.Controllers
             }
 
             var parkVehicle = await _context.ParkVehicle
+                .Include(v => v.Member)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (parkVehicle == null)
             {
@@ -157,10 +158,14 @@ namespace Garage2._0.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,VehicleType,ParkingSlot,RegNumber,Color,Brand,Model,Wheels,CheckInTime")] ParkVehicle parkVehicle)
+        public async Task<IActionResult> Create(ParkVehicle parkVehicle)
         {
             var regNrDuplicate = await _context.ParkVehicle.FirstOrDefaultAsync(x => x.RegNumber == parkVehicle.RegNumber);
 
+
+            var member = await _context.Member.FindAsync(parkVehicle.MemberId);
+            //parkVehicle.Member = member;
+            
             var modelValid = ModelState.IsValid;
         
             if (modelValid)
@@ -184,6 +189,8 @@ namespace Garage2._0.Controllers
 
             return View(parkVehicle);
         }
+
+
 
         [HttpGet]
         public ActionResult GetParkingSlots(int vehicleType)
