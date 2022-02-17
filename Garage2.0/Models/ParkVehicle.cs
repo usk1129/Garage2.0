@@ -35,6 +35,6 @@ namespace Garage2._0.Models
         public int MemberId { get; set; }
 
         // Nav Prop
-        public virtual Member Member { get; set; }
+        public  Member? Member { get; set; }
     }
 }
