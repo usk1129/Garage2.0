@@ -96,6 +96,9 @@ namespace Garage2._0.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ParkingSpotId")
+                        .HasColumnType("int");
+
                     b.Property<string>("RegNumber")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -110,6 +113,8 @@ namespace Garage2._0.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MemberId");
+
+                    b.HasIndex("ParkingSpotId");
 
                     b.HasIndex("VehicleTypeID");
 
@@ -144,6 +149,10 @@ namespace Garage2._0.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Garage2._0.Models.ParkingSpot", null)
+                        .WithMany("ParkVehicles")
+                        .HasForeignKey("ParkingSpotId");
+
                     b.HasOne("Garage2._0.Models.VehicleType", "VehicleType")
                         .WithMany("Vehicles")
                         .HasForeignKey("VehicleTypeID")
@@ -155,24 +164,14 @@ namespace Garage2._0.Migrations
                     b.Navigation("VehicleType");
                 });
 
-            modelBuilder.Entity("ParkVehicleParkingSpot", b =>
-                {
-                    b.HasOne("Garage2._0.Models.ParkVehicle", null)
-                        .WithMany()
-                        .HasForeignKey("ParkVehiclesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Garage2._0.Models.ParkingSpot", null)
-                        .WithMany()
-                        .HasForeignKey("ParkingSpotsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Garage2._0.Models.Member", b =>
                 {
                     b.Navigation("Vehicles");
+                });
+
+            modelBuilder.Entity("Garage2._0.Models.ParkingSpot", b =>
+                {
+                    b.Navigation("ParkVehicles");
                 });
 
             modelBuilder.Entity("Garage2._0.Models.VehicleType", b =>
