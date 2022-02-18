@@ -41,5 +41,24 @@ namespace Garage2._0.Models
 
         public VehicleType? VehicleType { get; set; }
 
+            public ParkVehicle()
+        {
+        }
+
+        public ParkVehicle(string parkingSlot, string regNr, string color, string brand, string model, int wheels, DateTime checkInTime, int memberId, int vehicleTypeId)
+        {
+            ParkingSlot = parkingSlot;
+            RegNumber = regNr;
+            Color = color; 
+            Brand = brand;
+            Model = model;
+            Wheels = wheels;
+            CheckInTime = checkInTime;
+            MemberId = memberId;
+            VehicleTypeID = vehicleTypeId;
+           
+
+        }
+
     }
 }
