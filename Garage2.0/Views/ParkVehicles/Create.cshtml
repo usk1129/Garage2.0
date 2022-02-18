@@ -37,8 +37,7 @@
                 </select>
                 <span asp-validation-for="VehicleType" class="text-danger"></span>
             </div>
-  
-
+ 
             <div class="form-group">
                 <label asp-for="RegNumber" class="control-label"></label>
                 <input asp-for="RegNumber" class="form-control" />
@@ -63,6 +62,11 @@
                 <label asp-for="Wheels" class="control-label"></label>
                 <input asp-for="Wheels" class="form-control" />
                 <span asp-validation-for="Wheels" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MemberId" class="control-label"></label>
+                <input asp-for="MemberId" class="form-control" />
+                <span asp-validation-for="MemberId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Park" class="btn btn-primary" id="SubmitId"/>
