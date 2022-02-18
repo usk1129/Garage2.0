@@ -1,13 +1,12 @@
 ﻿namespace Garage2._0.Models
 {
-    public enum VehicleType
+    public class VehicleType
     {
-        Bus, //0
-        Car, //1
-        Forklift, //2
-        Motorcycle, //3
-        Truck, //4
-        Tractor //5
 
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Size { get; set; }
+
+        public virtual ICollection<ParkVehicle> Vehicles {get; set;} = new List<ParkVehicle>();
     }
 }

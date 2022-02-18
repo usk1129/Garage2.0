@@ -12,14 +12,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garage2._0.Migrations
 {
     [DbContext(typeof(Garage2_0Context))]
-    [Migration("20220216105733_init")]
-    partial class init
+    [Migration("20220217101211_vehicle")]
+    partial class vehicle
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("ProductVersion", "6.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -90,7 +90,7 @@ namespace Garage2._0.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
-                    b.Property<int>("VehicleType")
+                    b.Property<int>("VehicleTypeID")
                         .HasColumnType("int");
 
                     b.Property<int>("Wheels")
@@ -100,7 +100,29 @@ namespace Garage2._0.Migrations
 
                     b.HasIndex("MemberId");
 
+                    b.HasIndex("VehicleTypeID");
+
                     b.ToTable("ParkVehicle");
+                });
+
+            modelBuilder.Entity("Garage2._0.Models.VehicleType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Size")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VehicleType");
                 });
 
             modelBuilder.Entity("Garage2._0.Models.ParkVehicle", b =>
@@ -111,10 +133,23 @@ namespace Garage2._0.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Garage2._0.Models.VehicleType", "VehicleType")
+                        .WithMany("Vehicles")
+                        .HasForeignKey("VehicleTypeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Member");
+
+                    b.Navigation("VehicleType");
                 });
 
             modelBuilder.Entity("Garage2._0.Models.Member", b =>
+                {
+                    b.Navigation("Vehicles");
+                });
+
+            modelBuilder.Entity("Garage2._0.Models.VehicleType", b =>
                 {
                     b.Navigation("Vehicles");
                 });
