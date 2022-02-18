@@ -1,9 +1,9 @@
-﻿@model IEnumerable<Garage2._0.Models.ParkVehicle>
-
+﻿@model IndexViewModel
+@inject IVehicleTypeSelectListService service
 @{
     ViewData["Title"] = "Garage List";
 }
-
+ 
 
 @if ( TempData["Success"] != null ) 
 {
@@ -18,12 +18,12 @@
         <input type="text" class="form-control" name="brandSearch" placeholder="Search on brand..." />
         <input type="text" class="form-control" name="modelSearch" placeholder="Search on model..." />
         <input type="text" class="form-control" name="wheelSearch" placeholder="Search on no of wheels..." />
-@*
+
         <div class="input-group-append">
-            <select class="form-control" name="vehicleType" asp-items="@Html.GetEnumSelectList<VehicleType>()">
+            <select class="form-control" name="vehicleType" asp-items="@await service.GetActiveVehicleTypesAsync()">
                 <option selected="selected" value="">Please select</option>
             </select>
-        </div>*@
+        </div>
     </div>
         <div class="input-group mb-3">
             <div class="input-group-append ml-5">
@@ -69,7 +69,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @foreach (var item in Model.ParkVehicles)
             {
                 <tr>
                     <td>
