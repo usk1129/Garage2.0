@@ -26,28 +26,28 @@ namespace Garage2._0.Controllers
         {
             var model = string.IsNullOrWhiteSpace(regSearch) ?
                                     _context.ParkVehicle :
-                                    _context.ParkVehicle.Where(m => m.RegNumber.Contains(regSearch));
+                                    _context.ParkVehicle.Include(m => m.VehicleType).Where(m => m.RegNumber.Contains(regSearch));
 
             model = string.IsNullOrWhiteSpace(colSearch) ?
                           model :
-                          model.Where(m => m.Color.Contains(colSearch));
+                          model.Include(m => m.VehicleType).Where(m => m.Color.Contains(colSearch));
 
             model = string.IsNullOrWhiteSpace(brandSearch) ?
                           model :
-                          model.Where(m => m.Brand.Contains(brandSearch));
+                          model.Include(m => m.VehicleType).Where(m => m.Brand.Contains(brandSearch));
 
             model = string.IsNullOrWhiteSpace(modelSearch) ?
                           model :
-                          model.Where(m => m.Model.Contains(modelSearch));
+                          model.Include(m => m.VehicleType).Where(m => m.Model.Contains(modelSearch));
 
             model = wheelSearch == null ?
                  model :
-                 model.Where(m => m.Wheels == wheelSearch);
+                 model.Include(m => m.VehicleType).Where(m => m.Wheels == wheelSearch);
 
 
             model = vehicleType == null ?
                              model :
-                             model.Where(m => m.VehicleType.Name == vehicleType);
+                             model.Include(m => m.VehicleType).Where(m => m.VehicleType.Name == vehicleType);
 
             return View(nameof(Index), await model.ToListAsync());
         }
@@ -204,7 +204,7 @@ namespace Garage2._0.Controllers
             vehicles = vehicles.OrderByDescending(v => v.ParkingSlot);
 
             
-            slotMap = vehicles.ToDictionary(v => v.ParkingSlot.ToString(), v => v.VehicleType.Name);
+            slotMap = vehicles.Include(v => v.VehicleType).ToDictionary(v => v.ParkingSlot.ToString(), v => v.VehicleType.Name);
 
             return slotMap;
 
