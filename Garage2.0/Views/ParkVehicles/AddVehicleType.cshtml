@@ -1,0 +1,47 @@
+﻿@model Garage2._0.Models.VehicleType
+
+@{
+    ViewData["Title"] = "AddVehicleType";
+}
+
+
+
+<h1>Add vehicle type</h1>
+
+<h4>Enter the vehicle types's data here</h4>
+<hr />
+
+
+
+
+<div class="row">
+
+    <div class="col-md-4">
+        <form asp-action="AddVehicleType">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Size" class="control-label"></label>
+                <input asp-for="Size" class="form-control" />
+                <span asp-validation-for="Size" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Park" class="btn btn-primary" id="SubmitId"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{    await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

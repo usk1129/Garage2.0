@@ -5,7 +5,7 @@ namespace Garage2._0.Models
     public class ParkVehicle
     {
         public int Id { get; set; }
-        public VehicleType VehicleType { get; set; }
+       // public VehicleType VehicleType { get; set; }
 
         public string ParkingSlot { get; set; }
         //        public IEnumerable<SelectListItem> ParkingSlots { get; set; } 
@@ -33,9 +33,11 @@ namespace Garage2._0.Models
         public int MemberId { get; set; }
 
         // Nav Prop
-        public virtual Member Member { get; set; }
+        public Member? Member { get; set; }
 
+        public int VehicleTypeID { get; set; }
 
-        public ICollection<ParkingSpot> ParkingSpots { get; set; }
+        public VehicleType? VehicleType { get; set; }
+
     }
 }

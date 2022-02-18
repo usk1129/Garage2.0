@@ -11,6 +11,7 @@ namespace Garage2._0.Data
         }
 
         public DbSet<Garage2._0.Models.ParkVehicle> ParkVehicle { get; set; }
+        public DbSet<Garage2._0.Models.VehicleType> VehicleType { get; set; }
 
         public DbSet<Garage2._0.Models.Member> Member { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿@model Garage2._0.Models.ParkVehicle
+@inject IVehicleTypeSelectListService service
 
 @{
     ViewData["Title"] = "Create";
@@ -22,7 +23,7 @@
             <div class="form-group">
                 <label asp-for="VehicleType" class="control-label"></label>
                 <select asp-for="VehicleType" class="form-control" id="VehicleTypeId" 
-                        asp-items="Html.GetEnumSelectList<VehicleType>()" >
+                        asp-items="@await service.GetAllVehicleTypesAsync()" >
                             <option value="">Choose vehicle type</option>
                 </select>
                 <span asp-validation-for="VehicleType" class="text-danger"></span>
@@ -36,8 +37,7 @@
                 </select>
                 <span asp-validation-for="VehicleType" class="text-danger"></span>
             </div>
-  
-
+ 
             <div class="form-group">
                 <label asp-for="RegNumber" class="control-label"></label>
                 <input asp-for="RegNumber" class="form-control" />
@@ -64,6 +64,11 @@
                 <span asp-validation-for="Wheels" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="MemberId" class="control-label"></label>
+                <input asp-for="MemberId" class="form-control" />
+                <span asp-validation-for="MemberId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Park" class="btn btn-primary" id="SubmitId"/>
             </div>
         </form>
@@ -80,45 +85,45 @@
     <script type="text/javascript">
 
 
-const vehicleTypeDropDown = document.querySelector('#VehicleTypeId');
+//const vehicleTypeDropDown = document.querySelector('#VehicleTypeId');
 
-const resetVehicleType = () => {
-    vehicleTypeDropDown.selected = false;
-    vehicleTypeDropDown.SelectedIndex = -1;
-}
+//const resetVehicleType = () => {
+//    vehicleTypeDropDown.selected = false;
+//    vehicleTypeDropDown.SelectedIndex = -1;
+//}
 
-const getParkingSlot = () => {
+//const getParkingSlot = () => {
 
-    var selectedVehicleType = $("#VehicleTypeId").val();
-    var parkingSlotSelect = $('#ParkingSlotId');
-    parkingSlotSelect.empty();
-    if (selectedVehicleType != null && selectedVehicleType != '') {
-        $.getJSON('@Url.Action("GetParkingSlots")', { vehicleType: selectedVehicleType }, function (slots) {
-            if (slots != null && !jQuery.isEmptyObject(slots)) {
-                $.each(slots, function (index, slots) {
-                option = document.createElement('option');
-                option.setAttribute('value', slots.text);
-                option.appendChild(document.createTextNode(slots.text));
-                parkingSlotSelect.append(option);
+//    var selectedVehicleType = $("#VehicleTypeId").val();
+//    var parkingSlotSelect = $('#ParkingSlotId');
+//    parkingSlotSelect.empty();
+//    if (selectedVehicleType != null && selectedVehicleType != '') {
+//        $.getJSON('@Url.Action("GetParkingSlots")', { vehicleType: selectedVehicleType }, function (slots) {
+//            if (slots != null && !jQuery.isEmptyObject(slots)) {
+//                $.each(slots, function (index, slots) {
+//                option = document.createElement('option');
+//                option.setAttribute('value', slots.text);
+//                option.appendChild(document.createTextNode(slots.text));
+//                parkingSlotSelect.append(option);
 
-                if (slots.value === "-1")
-                {
-                    document.querySelector('#SubmitId').disabled = true;
-                }
-                else 
-                {
-                    document.querySelector('#SubmitId').disabled = false;
+//                if (slots.value === "-1")
+//                {
+//                    document.querySelector('#SubmitId').disabled = true;
+//                }
+//                else 
+//                {
+//                    document.querySelector('#SubmitId').disabled = false;
 
-                }
-                });
-            };
-        });
-    }
+//                }
+//                });
+//            };
+//        });
+//    }
 
-}
-vehicleTypeDropDown.addEventListener('change', getParkingSlot);
+//}
+//vehicleTypeDropDown.addEventListener('change', getParkingSlot);
 
-vehicleTypeDropDown.addEventListener('load', resetVehicleType);
+//vehicleTypeDropDown.addEventListener('load', resetVehicleType);
     
     </script>
 }
