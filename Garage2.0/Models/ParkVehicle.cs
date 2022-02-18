@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Garage2._0.Models
 {
@@ -10,8 +8,8 @@ namespace Garage2._0.Models
        // public VehicleType VehicleType { get; set; }
 
         public string ParkingSlot { get; set; }
-//        public IEnumerable<SelectListItem> ParkingSlots { get; set; } 
-        
+        //        public IEnumerable<SelectListItem> ParkingSlots { get; set; } 
+
         [StringLength(30)]
         public string RegNumber { get; set; }
 
@@ -24,10 +22,10 @@ namespace Garage2._0.Models
         [StringLength(30)]
         public string Model { get; set; }
 
-        [Range(0,10)]
+        [Range(0, 10)]
         public int Wheels { get; set; }
         [Display(Name = "Check-In Time")]
-        public DateTime  CheckInTime { get; set; }
+        public DateTime CheckInTime { get; set; }
 
         //[ForeignKey("Member")]
 

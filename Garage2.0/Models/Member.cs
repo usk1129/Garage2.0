@@ -8,8 +8,8 @@
 
         public string LastName { get; set; }
 
+        [CheckPersonNr]
         public string PersonNumber { get; set; }
-
         public int Age { get; set; }
 
         // Nav Prop

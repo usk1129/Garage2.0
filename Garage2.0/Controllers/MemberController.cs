@@ -1,13 +1,8 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Garage2._0.Data;
 using Garage2._0.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Garage2._0.Controllers
 {
@@ -59,13 +54,31 @@ namespace Garage2._0.Controllers
         {
             if (ModelState.IsValid)
             {
+                string[] words = member.PersonNumber.Split('-');
+                var today = DateTime.Today;
+                int lastTwoDigitsOfYear = int.Parse(today.ToString("yy"));
+
+                var age = 0;
+                if (words[0].Length == 6)
+                {
+                    int ageTwoDigits = int.Parse(words[0].Substring(0, 2));
+                    if (lastTwoDigitsOfYear < ageTwoDigits)
+                        age = lastTwoDigitsOfYear + 100 - ageTwoDigits;
+                    else
+                        age = lastTwoDigitsOfYear - ageTwoDigits;
+                }
+                else
+                    age = today.Year - int.Parse(words[0].Substring(0, 4));
+
+                member.Age = age;
+
                 _context.Add(member);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(member);
         }
-
         // GET: Member/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
