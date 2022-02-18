@@ -10,7 +10,10 @@
         public virtual ICollection<ParkVehicle> Vehicles {get; set;} = new List<ParkVehicle>();
 
 
-        
+        public VehicleType()
+        {
+        }
+
         public VehicleType(string name, int size)
         {
             Name = name;

@@ -5,6 +5,7 @@ namespace Garage2._0.Services
     public interface IVehicleTypeSelectListService
     {
 
-        Task<IEnumerable<SelectListItem>> GetVehicleTypesAsync();
+        Task<IEnumerable<SelectListItem>> GetActiveVehicleTypesAsync();
+        Task<IEnumerable<SelectListItem>> GetAllVehicleTypesAsync();
     }
 }

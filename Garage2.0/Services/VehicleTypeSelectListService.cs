@@ -12,10 +12,22 @@ namespace Garage2._0.Services
             this.db = db;
         }
 
-        public async Task<IEnumerable<SelectListItem>> GetVehicleTypesAsync()
+        public async Task<IEnumerable<SelectListItem>> GetActiveVehicleTypesAsync()
         {
             return await db.ParkVehicle
             .Select(v => v.VehicleType)
+            .Distinct()
+            .Select(t => new SelectListItem
+            {
+                Text = t.Name,
+                Value = t.Id.ToString()
+            })
+            .ToListAsync();
+        }
+        public async Task<IEnumerable<SelectListItem>> GetAllVehicleTypesAsync()
+        {
+            return await db.VehicleType
+            .Select(v => v)
             .Distinct()
             .Select(t => new SelectListItem
             {
