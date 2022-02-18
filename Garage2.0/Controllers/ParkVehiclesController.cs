@@ -1,14 +1,10 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Garage2._0.Data;
+using Garage2._0.Helpers;
+using Garage2._0.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Garage2._0.Data;
-using Garage2._0.Models;
-using Garage2._0.Helpers;
 
 namespace Garage2._0.Controllers
 {
@@ -162,7 +158,7 @@ namespace Garage2._0.Controllers
             var regNrDuplicate = await _context.ParkVehicle.FirstOrDefaultAsync(x => x.RegNumber == parkVehicle.RegNumber);
 
             var modelValid = ModelState.IsValid;
-        
+
             if (modelValid)
             {
 
@@ -180,7 +176,7 @@ namespace Garage2._0.Controllers
                 ModelState.AddModelError("", "Could not park, something went wrong!");
                 return View();
             }
-            
+
 
             return View(parkVehicle);
         }
@@ -201,7 +197,7 @@ namespace Garage2._0.Controllers
                            select v;
             vehicles = vehicles.OrderByDescending(v => v.ParkingSlot);
 
-            
+
             slotMap = vehicles.ToDictionary(v => v.ParkingSlot.ToString(), v => v.VehicleType.ToString());
 
             return slotMap;
@@ -239,7 +235,7 @@ namespace Garage2._0.Controllers
         {
             int garageCapacity = 0;
             var model = _context.ParkVehicle;
-            
+
 
             Dictionary<int, string> currentSlots = new Dictionary<int, string>();
             Dictionary<string, string> slotMap = GetExistingParkedVechiles();
@@ -288,7 +284,7 @@ namespace Garage2._0.Controllers
                 {
                     for (int i = 1; i <= garageCapacity; i++)
                     {
-                        if (slotOccupied(i.ToString(), slotMap)) 
+                        if (slotOccupied(i.ToString(), slotMap))
                         {
                             currentSlots.Add(i, "Occupied");
                         }
@@ -300,8 +296,8 @@ namespace Garage2._0.Controllers
                 }
             }
 
-           // GarageSlots gSlots = new GarageSlots(garageCapacity, currentSlots);
-            
+            // GarageSlots gSlots = new GarageSlots(garageCapacity, currentSlots);
+
             switch (vehicleType)
             {
                 case (int)VehicleType.Bus:
@@ -385,7 +381,7 @@ namespace Garage2._0.Controllers
                     (
                         new SelectListItem
                         {
-                            Value =  nextSlot,
+                            Value = nextSlot,
                             Text = nextSlot
                         }
                     );
@@ -523,9 +519,9 @@ namespace Garage2._0.Controllers
         }
 
         private int CalcPrice(DateTime checkInTime, DateTime currentTime)
-        { 
-        int priceRate = 1;           
-        return 5 + (int)(currentTime - checkInTime).TotalMinutes * priceRate;
+        {
+            int priceRate = 1;
+            return 5 + (int)(currentTime - checkInTime).TotalMinutes * priceRate;
         }
 
         public async Task<IActionResult> Statistics()
@@ -536,21 +532,22 @@ namespace Garage2._0.Controllers
             int currentFees = 0;
             var currentTime = DateTime.Now;
 
-           List<VehicleTypeHelper> vehicleTypeAmounts = await _context.ParkVehicle.GroupBy(t => t.VehicleType)
-                                       .Select(t => new VehicleTypeHelper
-                                       {
-                                           Category = t.Key,
-                                           Count = t.Count()                                           
-                                       }).ToListAsync();
+            List<VehicleTypeHelper> vehicleTypeAmounts = await _context.ParkVehicle.GroupBy(t => t.VehicleType)
+                                        .Select(t => new VehicleTypeHelper
+                                        {
+                                            Category = t.Key,
+                                            Count = t.Count()
+                                        }).ToListAsync();
 
 
 
-            await _context.ParkVehicle.ForEachAsync(x => { 
-                                        wheels += x.Wheels; 
-                                        totalVehicles += 1;
-                                        currentFees += CalcPrice(x.CheckInTime, currentTime);
-                                        
-             });
+            await _context.ParkVehicle.ForEachAsync(x =>
+            {
+                wheels += x.Wheels;
+                totalVehicles += 1;
+                currentFees += CalcPrice(x.CheckInTime, currentTime);
+
+            });
 
             var viewModel = new StatisticsViewModel
             {
@@ -560,8 +557,8 @@ namespace Garage2._0.Controllers
                 CurrentFees = currentFees
 
             };
-            
-   
+
+
 
             return View(viewModel);
         }
