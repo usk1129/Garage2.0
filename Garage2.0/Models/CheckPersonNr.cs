@@ -19,5 +19,15 @@ namespace Garage2._0.Models
             }
             return false;
         }
+
+        //protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        //{
+        //    if (value is string personNr)
+        //    {
+        //        var model = validationContext.ObjectInstance as Member;
+        //        model.Age = 1;
+        //    }
+        //    return ValidationResult.Success;
+        //}
     }
 }

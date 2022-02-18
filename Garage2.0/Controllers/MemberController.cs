@@ -59,6 +59,8 @@ namespace Garage2._0.Controllers
         {
             if (ModelState.IsValid)
             {
+                member.Age = DateTime.Today.Year - int.Parse(member.PersonNumber.Take(4).ToString());
+                Console.WriteLine(member.Age);
                 _context.Add(member);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
