@@ -51,6 +51,16 @@ namespace Garage2._0.Controllers
 
             return View(nameof(Index), await model.ToListAsync());
         }
+        public async Task<IActionResult> Index2()
+        {
+            var model = new IndexViewModel
+            {
+                ParkVehicles = await _context.ParkVehicle.ToListAsync(),
+            };
+
+            return View(nameof(Index2), model);
+
+        }
 
         public async Task<IActionResult> Index(string searchString, string sortOrder)
         {
