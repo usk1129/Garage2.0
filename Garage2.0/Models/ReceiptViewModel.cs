@@ -26,7 +26,7 @@ namespace Garage2._0.Models
         public DateTime CheckOutTime { get; set; }
 
         public int Price { get; set; }
-        [Display(Name = "Duration")] 
+        [Display(Name = "Duration")]
         [DisplayFormat(DataFormatString = @"{0:dd\:hh\:mm\:ss}", ApplyFormatInEditMode = true)]
         public TimeSpan ParkedTime { get; set; }
 
