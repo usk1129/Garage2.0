@@ -14,6 +14,16 @@
 
         // Nav Prop
         public  ICollection<ParkVehicle> Vehicles { get; set; } = new List<ParkVehicle>();
+        public Member()
+        {
+        }
 
+        public Member(string firstName, string lastName, string personNumber, int age)
+        {
+            FirstName = firstName;
+            LastName = lastName;    
+            PersonNumber = personNumber;
+            Age = age;
+        }
     }
 }

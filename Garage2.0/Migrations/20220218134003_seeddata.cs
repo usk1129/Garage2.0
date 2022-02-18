@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Garage2._0.Migrations
 {
-    public partial class vehicletype : Migration
+    public partial class seeddata : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

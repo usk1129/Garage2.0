@@ -13,8 +13,8 @@ namespace Garage2._0.Extensions
                 var serviceProvider = scope.ServiceProvider;
                 var db = serviceProvider.GetRequiredService<Garage2_0Context>();
 
-             //   db.Database.EnsureDeleted();
-             //   db.Database.Migrate();
+                db.Database.EnsureDeleted();
+                db.Database.Migrate();
 
                 try
                 {
