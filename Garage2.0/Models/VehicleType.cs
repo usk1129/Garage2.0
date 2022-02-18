@@ -8,5 +8,13 @@
         public int Size { get; set; }
 
         public virtual ICollection<ParkVehicle> Vehicles {get; set;} = new List<ParkVehicle>();
+
+
+        
+        public VehicleType(string name, int size)
+        {
+            Name = name;
+            Size = size;
+        }
     }
 }

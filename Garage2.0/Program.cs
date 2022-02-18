@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Garage2._0.Data;
+using Garage2._0.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<Garage2_0Context>(options =>
@@ -13,6 +15,10 @@ builder.Services.AddControllersWithViews();
 //builder.Services.AddTransient<IParkingSlotRepository, ParkingSlotRepository>();
 
 var app = builder.Build();
+
+//Seed
+app.SeedDataAsync().GetAwaiter().GetResult();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
