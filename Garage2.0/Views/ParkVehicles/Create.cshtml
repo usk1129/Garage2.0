@@ -23,7 +23,7 @@
             <div class="form-group">
                 <label asp-for="VehicleType" class="control-label"></label>
                 <select asp-for="VehicleType" class="form-control" id="VehicleTypeId" 
-                        asp-items="@await service.GetVehicleTypesAsync()" >
+                        asp-items="@await service.GetAllVehicleTypesAsync()" >
                             <option value="">Choose vehicle type</option>
                 </select>
                 <span asp-validation-for="VehicleType" class="text-danger"></span>

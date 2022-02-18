@@ -20,7 +20,7 @@
         <input type="text" class="form-control" name="wheelSearch" placeholder="Search on no of wheels..." />
 
         <div class="input-group-append">
-            <select class="form-control" name="vehicleType" asp-items="@await service.GetVehicleTypesAsync()">
+            <select class="form-control" name="vehicleType" asp-items="@await service.GetActiveVehicleTypesAsync()">
                 <option selected="selected" value="">Please select</option>
             </select>
         </div>
