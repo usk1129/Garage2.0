@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Garage2._0.Migrations
 {
-    public partial class vehicle : Migration
+    public partial class vehicletype : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -23,6 +23,18 @@ namespace Garage2._0.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Member", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ParkingSpot",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ParkingSpot", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -53,7 +65,8 @@ namespace Garage2._0.Migrations
                     Wheels = table.Column<int>(type: "int", nullable: false),
                     CheckInTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MemberId = table.Column<int>(type: "int", nullable: false),
-                    VehicleTypeID = table.Column<int>(type: "int", nullable: false)
+                    VehicleTypeID = table.Column<int>(type: "int", nullable: false),
+                    ParkingSpotId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -64,6 +77,11 @@ namespace Garage2._0.Migrations
                         principalTable: "Member",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ParkVehicle_ParkingSpot_ParkingSpotId",
+                        column: x => x.ParkingSpotId,
+                        principalTable: "ParkingSpot",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ParkVehicle_VehicleType_VehicleTypeID",
                         column: x => x.VehicleTypeID,
@@ -78,6 +96,11 @@ namespace Garage2._0.Migrations
                 column: "MemberId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ParkVehicle_ParkingSpotId",
+                table: "ParkVehicle",
+                column: "ParkingSpotId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ParkVehicle_VehicleTypeID",
                 table: "ParkVehicle",
                 column: "VehicleTypeID");
@@ -90,6 +113,9 @@ namespace Garage2._0.Migrations
 
             migrationBuilder.DropTable(
                 name: "Member");
+
+            migrationBuilder.DropTable(
+                name: "ParkingSpot");
 
             migrationBuilder.DropTable(
                 name: "VehicleType");
