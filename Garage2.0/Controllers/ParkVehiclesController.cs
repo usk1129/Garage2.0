@@ -2,6 +2,7 @@
 using Garage2._0.Data;
 using Garage2._0.Helpers;
 using Garage2._0.Models;
+using Garage2._0.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -55,6 +56,31 @@ namespace Garage2._0.Controllers
             };
 
             return View(nameof(Index2), model);
+
+        }
+        public async Task<IActionResult> GarageSlots()
+        {
+            var spots = await _context.ParkingSpot.ToListAsync();
+
+            List<GarageSlotModel> parkingSpots =  new List<GarageSlotModel>(); ;
+
+            foreach (var item in spots)
+            {
+                string occupancy = "";
+                if (item.ParkVehicleID != null)
+                    occupancy = "Taken";
+                else
+                    occupancy = "Open";
+                parkingSpots.Add(new GarageSlotModel
+                {
+                    Slot = item.ParkingSpotNr,
+                    Occupancy = occupancy
+
+
+                });
+            }
+
+            return View(parkingSpots);
 
         }
 
