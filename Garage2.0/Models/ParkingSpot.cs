@@ -20,6 +20,7 @@ namespace Garage2._0.Models
 
         public int? ParkVehicleID { get; set; }
 
+
         public ParkVehicle? ParkVehicle { get; set; }
         public int V { get; }
     }
