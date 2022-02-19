@@ -50,10 +50,25 @@ namespace Garage2._0.Controllers
         }
         public async Task<IActionResult> Index2()
         {
-            var model = new IndexViewModel
+
+            IQueryable<ParkVehicle> vehicles = _context.ParkVehicle.Where(v => v.ParkingSpotId != null).Include(v => v.VehicleType).Include(v => v.Parkings).Include(v => v.Member);
+            List<IndexViewModel> model = new List<IndexViewModel>();
+            foreach (var vehicle in vehicles)
             {
-                ParkVehicles = await _context.ParkVehicle.ToListAsync(),
-            };
+                model.Add(new IndexViewModel
+                {
+                    RegNumber = vehicle.RegNumber,
+                    Color = vehicle.Color,
+                    Brand = vehicle.Brand,
+                    Model = vehicle.Model,
+                    Wheels = vehicle.Wheels,
+                    ParkingSpotNR = (int)vehicle.ParkingSpotId,
+                    Owner = vehicle.Member.FirstName + " " + vehicle.Member.FirstName,
+                    VehicleType = vehicle.VehicleType.Name
+
+                }) ;
+
+            }
 
             return View(nameof(Index2), model);
 
