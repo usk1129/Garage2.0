@@ -9,57 +9,62 @@ namespace Garage2._0.Data
     public class SeedData
     {
 
-        public static async Task InitAsync(Garage2_0Context db)
+        public static async Task InitAsync(Garage2_0Context db, IConfiguration configuration)
         {
             if (await db.VehicleType.AnyAsync()) return;
 
             var vehicleTypes = GetVehicleTypes();
             var members = GetMembers();
-            var vehicles = GetVehicles();
+            var parkSpots = GetParkinSpots(configuration);
+            //var vehicles = GetVehicles();
+
+        
 
             await db.AddRangeAsync(members);
             await db.AddRangeAsync(vehicleTypes);
-           // await db.AddRangeAsync(vehicles);
+            await db.AddRangeAsync(parkSpots);
 
+            
 
             await db.SaveChangesAsync();
 
         }
-
-        private static object GetVehicles()
-        {
-            var vehicles = new List<ParkVehicle>();
-            var now = DateTime.Now;
-
-            vehicles.Add(new ParkVehicle("1", "ABC123", "BLUE", "Volvo", "V70", 4, now, 1, 2));
-            vehicles.Add(new ParkVehicle("4", "ABC123", "RED", "Volvo", "V70", 4, now, 2, 1));
-            vehicles.Add(new ParkVehicle("6", "ABC123", "YELLOW", "Volvo", "V70", 4, now, 3, 3));
-            vehicles.Add(new ParkVehicle("7", "ABC123", "BLACK", "Volvo", "V70", 4, now, 5, 4));
-            vehicles.Add(new ParkVehicle("1", "ABC123", "WHITE", "Volvo", "V70", 4, now, 6, 2));
-            vehicles.Add(new ParkVehicle("8", "ABC123", "GREEN", "Volvo", "V70", 4, now, 1, 2));
-            vehicles.Add(new ParkVehicle("9", "ABC123", "ORANGE", "Volvo", "V70", 4, now, 4, 2));
-            vehicles.Add(new ParkVehicle("2", "ABC123", "BLUE" , "Volvo", "V70", 4, now, 3, 2));
-
-
-                return vehicles;
-        }
-
+        
         private static IEnumerable<VehicleType> GetVehicleTypes()
         {
             var vehicleTypes = new List<VehicleType>();
+        var now = DateTime.Now;
+
+        var type = new VehicleType("Motorcycle", 1);
+            type.Vehicles.Add(new ParkVehicle("ABC123", "BLUE", "Volvo", "V70", 4, now, 1));
+            vehicleTypes.Add(type);
+            type = new VehicleType("Computer Chair", 1);
+        type.Vehicles.Add(new ParkVehicle("ABC123", "YELLOW", "Volvo", "V70", 4, now, 3));
+        vehicleTypes.Add(type);
+        type = new VehicleType("Tractor", 2);
+        type.Vehicles.Add(new ParkVehicle("ABC123", "BLACK", "Volvo", "V70", 4, now, 5));
+        vehicleTypes.Add(type);
+        type = new VehicleType("Bus", 3);
+        type.Vehicles.Add(new ParkVehicle("ABC123", "WHITE", "Volvo", "V70", 4, now, 6));
+        vehicleTypes.Add(type);
+        type = new VehicleType("Car", 1);
+        type.Vehicles.Add(new ParkVehicle("ABC123", "GREEN", "Volvo", "V70", 4, now, 1));
+        vehicleTypes.Add(type);
+        type = new VehicleType("Truck", 2);
+        type.Vehicles.Add(new ParkVehicle("ABC123", "ORANGE", "Volvo", "V70", 4, now, 4));
+        vehicleTypes.Add(type);
+        type = new VehicleType("Forklift", 1);
+        type.Vehicles.Add(new ParkVehicle("ABC123", "BLUE", "Volvo", "V70", 4, now, 3));
+        vehicleTypes.Add(type);
 
 
-            vehicleTypes.Add(new VehicleType("Motorcycle", 1));
-            vehicleTypes.Add(new VehicleType("Tractor", 2));
-            vehicleTypes.Add(new VehicleType("Bus", 3));
-            vehicleTypes.Add(new VehicleType("Car", 1));
-            vehicleTypes.Add(new VehicleType("Truck", 2));
-            vehicleTypes.Add(new VehicleType("Forklift", 1));
 
 
 
-            
-            return vehicleTypes;
+
+
+
+        return vehicleTypes;
         }
         private static IEnumerable<Member> GetMembers()
         {
@@ -81,6 +86,24 @@ namespace Garage2._0.Data
 
 
             return members;
+        }
+        private static IEnumerable<ParkingSpot> GetParkinSpots(IConfiguration configuration)
+        {
+            var parkSpot = new List<ParkingSpot>();
+            int garageCapacity = 0;
+
+            if (int.TryParse(configuration.GetSection("GarageCapacity").Value, out garageCapacity) is true)
+            {
+                for (int i = 0; i < garageCapacity; i++)
+                {
+                    parkSpot.Add(new ParkingSpot(i+1));
+
+                }
+            }
+
+
+
+            return parkSpot;
         }
     }
 }

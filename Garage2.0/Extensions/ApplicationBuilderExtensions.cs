@@ -12,13 +12,14 @@ namespace Garage2._0.Extensions
             {
                 var serviceProvider = scope.ServiceProvider;
                 var db = serviceProvider.GetRequiredService<Garage2_0Context>();
+                var config = serviceProvider.GetRequiredService<IConfiguration>();
 
                 db.Database.EnsureDeleted();
                 db.Database.Migrate();
 
                 try
                 {
-                    await SeedData.InitAsync(db);
+                    await SeedData.InitAsync(db, config);
                 }
                 catch (Exception e)
                 {
