@@ -13,6 +13,7 @@ builder.Services.AddDbContext<Garage2_0Context>(options =>
 
 builder.Services.AddScoped<IVehicleTypeSelectListService, VehicleTypeSelectListService>();
 builder.Services.AddScoped<IMemberSelectListService, MemberSelectListService>();
+builder.Services.AddScoped<IParkingSpotSelectListService, ParkingSpotSelectListService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

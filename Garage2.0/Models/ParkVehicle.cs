@@ -39,6 +39,8 @@ namespace Garage2._0.Models
 
         public VehicleType? VehicleType { get; set; }
 
+        public int ParkingSpotId { get; set; }
+
 
 
 

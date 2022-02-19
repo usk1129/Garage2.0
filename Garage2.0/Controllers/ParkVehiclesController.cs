@@ -184,7 +184,9 @@ namespace Garage2._0.Controllers
 
                     parkVehicle.CheckInTime = DateTime.Now;
                     VehicleType type = await _context.VehicleType.FirstOrDefaultAsync(t => t.Id == parkVehicle.VehicleTypeID);
-                    type.Vehicles.Add(parkVehicle);                  
+                    type.Vehicles.Add(parkVehicle);
+                    ParkingSpot spot = await _context.ParkingSpot.FirstOrDefaultAsync(s => s.ParkingSpotNr == parkVehicle.ParkingSpotId);
+                    spot.ParkVehicle = parkVehicle;
                     await _context.SaveChangesAsync();
 
                     //_context.Add(parkVehicle);
