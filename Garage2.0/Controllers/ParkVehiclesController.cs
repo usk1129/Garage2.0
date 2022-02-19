@@ -69,7 +69,7 @@ namespace Garage2._0.Controllers
             ViewBag.WheelsSortParm = sortOrder == "Wheels" ? "Wheels_desc" : "Wheels";
             ViewBag.CheckInTimeSortParm = sortOrder == "Date" ? "CheckInTime_desc" : "Date";
 
-            IQueryable<ParkVehicle> vehicles = _context.ParkVehicle.Include(v => v.VehicleType);
+            IQueryable<ParkVehicle> vehicles = _context.ParkVehicle.Include(v => v.VehicleType).Include(v => v.Parkings);
 
             //var vehicles = from v in _context.ParkVehicle                           
             //               select v;
@@ -85,12 +85,12 @@ namespace Garage2._0.Controllers
                 case "vehicle_desc":
                     vehicles = vehicles.OrderByDescending(v => v.VehicleType.Name);
                     break;
-                case "park_desc":
-                    vehicles = vehicles.OrderByDescending(v => v.ParkingSlot);
-                    break;
-                case "Parking Slot":
-                    vehicles = vehicles.OrderBy(v => v.ParkingSlot);
-                    break;
+                //case "park_desc":
+                //    vehicles = vehicles.OrderByDescending(v => v.ParkingSlot);
+                //    break;
+                //case "Parking Slot":
+                //    vehicles = vehicles.OrderBy(v => v.ParkingSlot);
+                //    break;
                 case "RegNumber":
                     vehicles = vehicles.OrderBy(v => v.RegNumber);
                     break;
@@ -199,194 +199,6 @@ namespace Garage2._0.Controllers
         }
 
 
-
-        [HttpGet]
-        public ActionResult GetParkingSlots(VehicleType vehicleType)
-        {
-            IEnumerable<SelectListItem> slots = GetSlots(vehicleType);
-            return Json(slots);
-        }
-
-        private Dictionary<string, string> GetExistingParkedVechiles()
-        {
-
-            Dictionary<string, string> slotMap = new Dictionary<string, string>();
-
-            var vehicles = from v in _context.ParkVehicle
-                           select v;
-            vehicles = vehicles.OrderByDescending(v => v.ParkingSlot);
-
-            
-            slotMap = vehicles.Include(v => v.VehicleType).ToDictionary(v => v.ParkingSlot.ToString(), v => v.VehicleType.Name);
-
-            return slotMap;
-
-        }
-
-        private IEnumerable<SelectListItem> GetSlots(VehicleType vehicleType)
-        {
-            List<SelectListItem> parkingSlots = new List<SelectListItem>();
-
-            Dictionary<string, string> slotMap = GetExistingParkedVechiles();
-
-            parkingSlots = GetFreeSlots(vehicleType, slotMap);
-
-            return parkingSlots;
-
-        }
-
-        private bool slotOccupied(string i, Dictionary<string, string> slotMap)
-        {
-
-            foreach (var item in slotMap)
-            {
-                string[] slots = item.Key.Split(',');
-                for (int j = 0; j < slots.Length; j++)
-                {
-                    if (slots[j].Equals(i))
-                        return true;
-                }
-            }
-            return false;
-        }
-
-        public async Task<IActionResult> GarageSlots()
-        {
-            int garageCapacity = 0;
-            var model = _context.ParkVehicle;
-
-
-            Dictionary<int, string> currentSlots = new Dictionary<int, string>();
-            Dictionary<string, string> slotMap = GetExistingParkedVechiles();
-
-            if (int.TryParse(_configuration.GetSection("GarageCapacity").Value, out garageCapacity) is true)
-            {
-                if (garageCapacity > 0)
-                {
-                    for (int i = 1; i <= garageCapacity; i++)
-                    {
-                        if (slotOccupied(i.ToString(), slotMap))
-                        {
-                            currentSlots.Add(i, "Occupied");
-                        }
-                        else
-                        {
-                            currentSlots.Add(i, "Empty");
-                        }
-                    }
-                }
-            }
-
-            List<GarageSlotModel> slotCollection = new List<GarageSlotModel>();
-
-            foreach (var item in currentSlots)
-            {
-                slotCollection.Add(new GarageSlotModel { Capacity = garageCapacity, Slot = item.Key, Occupancy = item.Value });
-            }
-
-            return View(slotCollection.ToList());
-            //return View(nameof(Index), await model.ToListAsync());
-
-        }
-
-
-        private List<SelectListItem> GetFreeSlots(VehicleType vehicle, Dictionary<string, string> slotMap)
-        {
-
-            List<SelectListItem> parkingSlots = new List<SelectListItem>();
-            int garageCapacity = -1;
-            Dictionary<int, string> currentSlots = new Dictionary<int, string>();
-
-            if (int.TryParse(_configuration.GetSection("GarageCapacity").Value, out garageCapacity) is true)
-            {
-                if (garageCapacity > 0)
-                {
-                    for (int i = 1; i <= garageCapacity; i++)
-                    {
-                        if (slotOccupied(i.ToString(), slotMap))
-                        {
-                            currentSlots.Add(i, "Occupied");
-                        }
-                        else
-                        {
-                            currentSlots.Add(i, "Empty");
-                        }
-                    }
-                }
-            }
-
-            // GarageSlots gSlots = new GarageSlots(garageCapacity, currentSlots);
-
-            parkingSlots = GetNextAvailableSlot(vehicle, currentSlots, garageCapacity);
- 
-            return parkingSlots;
-
-        }
-
-
-        private List<SelectListItem> GetNextAvailableSlot(VehicleType vehicle, Dictionary<int, string> currentSlots, int garageCapacity)
-        {
-            string nextSlot = "";
-            bool slotFound = false;
-
-            List<SelectListItem> parkingSlots = new List<SelectListItem>();
-            parkingSlots.Clear();
-
-            for (int i = 0; i < currentSlots.Count; i++)
-            {
-                slotFound = false;
-                nextSlot = "";
-                //already peeking at the end with more space needed. so not found
-                if (i + vehicle.Size > garageCapacity)
-                {
-                    slotFound = false;
-                    break;
-                }
-                for (int j = 0; j < vehicle.Size; j++)
-                {
-                    if (currentSlots.ElementAt(i + j).Value.Equals("Empty"))
-                    {
-                        slotFound = true;
-                        nextSlot += "," + currentSlots.ElementAt(i + j).Key;
-                    }
-                    else
-                    {
-                        slotFound = false;
-                        break;
-                    }
-                }
-                if (slotFound)
-                {
-                    //found it
-                    break;
-                }
-            }
-
-            nextSlot = nextSlot.TrimStart(',');
-            if (slotFound is false)
-            {
-                parkingSlots.Add
-                    (
-                        new SelectListItem
-                        {
-                            Value = "-1",
-                            Text = "Not Possible to park " + vehicle.Name
-                        }
-                    ) ;
-            }
-            else
-            {
-                parkingSlots.Add
-                    (
-                        new SelectListItem
-                        {
-                            Value = nextSlot,
-                            Text = nextSlot
-                        }
-                    );
-            }
-            return parkingSlots;
-        }
 
         // GET: ParkVehicles/Edit/5
         public async Task<IActionResult> Edit(int? id)
