@@ -1,4 +1,5 @@
 ﻿using Garage2._0.Data;
+using Garage2._0.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,7 @@ namespace Garage2._0.Services
         {
             this.db = db;
         }
+
 
         public async Task<IEnumerable<SelectListItem>> GetParkingSpotsAsync()
         {
