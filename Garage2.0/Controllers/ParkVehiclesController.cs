@@ -200,8 +200,28 @@ namespace Garage2._0.Controllers
         {
             return View();
         }
+        public IActionResult CheckInMember()
+        {
+            return View();
+        }
+        public async Task<IActionResult> CheckInMemberVehicleAsync(CheckInMemberViewModel viewModel)
+        {
+            var data = await _context.ParkVehicle.Where(v => v.MemberId == viewModel.MemberId)
+             .Select(v => v)
+             .Select(t => new SelectListItem
+             {
+                 Text = t.RegNumber,
+                 Value = t.Id.ToString()
+             })
+             .ToListAsync();
 
-
+            var model = new CheckInMemberVehicleViewModel
+            {
+                MemberName = await _context.Member.Where(m => m.Id == viewModel.MemberId).Select(m => m.FirstName + " " + m.LastName).FirstAsync(),
+                Vehicles = data
+            };
+            return View(model);
+        }
         // POST: ParkVehicles/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
