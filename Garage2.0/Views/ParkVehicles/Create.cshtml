@@ -33,7 +33,7 @@
             <div class="form-group">
                 <label asp-for="ParkingSpotID" class="control-label"></label>
                 <select asp-for="ParkingSpotID" class="form-control" id="ParkingSpotID" 
-                        asp-items="@await service3.GetParkingSpotsAsync()" >
+                        asp-items="@await service3.GetEmptyParkingSpotsAsync()" >
                             <option value="">Choose Parking Spot</option>
                 </select>
                 <span asp-validation-for="ParkingSpotID" class="text-danger"></span>

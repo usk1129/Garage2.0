@@ -7,5 +7,6 @@ namespace Garage2._0.Services
     {
 
         Task<IEnumerable<SelectListItem>> GetParkingSpotsAsync();
+        Task<IEnumerable<SelectListItem>> GetEmptyParkingSpotsAsync();
     }
 }
