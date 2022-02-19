@@ -181,9 +181,16 @@ namespace Garage2._0.Controllers
 
                 if (regNrDuplicate == default)
                 {
+
                     parkVehicle.CheckInTime = DateTime.Now;
-                    _context.Add(parkVehicle);
+                    VehicleType type = await _context.VehicleType.FirstOrDefaultAsync(t => t.Id == parkVehicle.VehicleTypeID);
+                    type.Vehicles.Add(parkVehicle);                  
                     await _context.SaveChangesAsync();
+
+                    //_context.Add(parkVehicle);
+
+
+                    
                     TempData["Success"] = $"{parkVehicle.RegNumber} is successfully parked";
                     return RedirectToAction(nameof(Index));
                 }
