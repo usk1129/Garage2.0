@@ -50,7 +50,7 @@ namespace Garage2._0.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,PersonNumber,Age")] Member member)
+        public async Task<IActionResult> Create( Member member)
         {
             if (ModelState.IsValid)
             {
@@ -100,7 +100,7 @@ namespace Garage2._0.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,PersonNumber,Age")] Member member)
+        public async Task<IActionResult> Edit(int id, Member member)
         {
             if (id != member.Id)
             {
