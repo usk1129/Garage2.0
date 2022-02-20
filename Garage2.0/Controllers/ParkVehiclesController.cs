@@ -216,7 +216,7 @@ namespace Garage2._0.Controllers
             {
 
 
-                var data = await _context.ParkVehicle.Where(v => v.MemberId == viewModel.MemberId)
+                var data = await _context.ParkVehicle.Where(v => v.MemberId == viewModel.MemberId && v.ParkingSpotId == null)
              .Select(v => v)
              .Select(t => new SelectListItem
              {
