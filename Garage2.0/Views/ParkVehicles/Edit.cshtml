@@ -59,6 +59,10 @@
                 <input asp-for="CheckInTime" class="form-control" readonly />
                 <span asp-validation-for="CheckInTime" class="text-danger"></span>
             </div>
+             @Html.HiddenFor(model => model.MemberId)
+             @Html.HiddenFor(model => model.VehicleTypeID)
+             @Html.HiddenFor(model => model.ParkingSpotId)
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
