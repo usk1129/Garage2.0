@@ -1,4 +1,5 @@
 ﻿
+using Bogus;
 using Garage2._0.Data;
 using Garage2._0.Models;
 using Microsoft.EntityFrameworkCore;
@@ -8,11 +9,12 @@ namespace Garage2._0.Data
 {
     public class SeedData
     {
-
+        private static Faker faker;
         public static async Task InitAsync(Garage2_0Context db, IConfiguration configuration)
         {
             if (await db.VehicleType.AnyAsync()) return;
 
+            faker = new Faker("sv");
             var vehicleTypes = GetVehicleTypes();
             var members = GetMembers();
             var parkSpots = GetParkinSpots(configuration);
@@ -71,18 +73,18 @@ namespace Garage2._0.Data
             var members = new List<Member>();
 
 
-            members.Add(new Member("Anna", "Bosson", "921010-1111", 22));
-            members.Add(new Member("Bertil", "Bisson", "921010-1111", 22));
-            members.Add(new Member("Ceasar", "Besson", "921010-1111", 22));
-            members.Add(new Member("David", "Byson", "921010-1111", 22));
-            members.Add(new Member("Erik", "Blison", "921010-1111", 22));
-            members.Add(new Member("Fabian", "Bason", "921010-1111", 22));
-            members.Add(new Member("Gunnila", "Böson", "921010-1111", 22));
-            members.Add(new Member("Hanna", "Båson", "921010-1111", 22));
-            members.Add(new Member("Ivan", "Bäson", "931010-1111", 22));
-            members.Add(new Member("Jens", "Johansson", "9201010-1111", 22));
+            for(int i = 0; i < 20; i++)
+            {
+                var fName = faker.Name.FirstName();
+                var lName = faker.Name.LastName();
+                var PersonNumber = faker.Address.CountryCode();
+                var age = faker.Random.Number(1, 100);
+                var avatar = faker.Internet.Avatar();
+                var member = new Member(avatar,fName, lName, PersonNumber, age);
+                members.Add(member);
+            }
 
-
+           
 
 
             return members;
