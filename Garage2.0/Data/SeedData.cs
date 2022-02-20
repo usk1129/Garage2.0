@@ -101,8 +101,6 @@ namespace Garage2._0.Data
                 }
             }
 
-
-
             return parkSpot;
         }
     }
