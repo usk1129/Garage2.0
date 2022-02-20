@@ -21,9 +21,13 @@
         public Member(string firstName, string lastName, string personNumber, int age)
         {
             FirstName = firstName;
-            LastName = lastName;    
+            LastName = lastName;
             PersonNumber = personNumber;
             Age = age;
+        }
+        public string GetFullName()
+        {
+            return FirstName + " " + LastName;
         }
     }
 }

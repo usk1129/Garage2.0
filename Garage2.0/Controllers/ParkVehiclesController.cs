@@ -63,7 +63,7 @@ namespace Garage2._0.Controllers
                     Model = vehicle.Model,
                     Wheels = vehicle.Wheels,
                     ParkingSpotNR = (int)vehicle.ParkingSpotId,
-                    Owner = vehicle.Member.FirstName + " " + vehicle.Member.FirstName,
+                    Owner = vehicle.Member.GetFullName(),
                     VehicleType = vehicle.VehicleType.Name
 
                 });
@@ -227,7 +227,8 @@ namespace Garage2._0.Controllers
 
                 var model = new CheckInMemberVehicleViewModel
                 {
-                    MemberName = await _context.Member.Where(m => m.Id == viewModel.MemberId).Select(m => m.FirstName + " " + m.LastName).FirstAsync(),
+       
+                    MemberName = await _context.Member.Where(m => m.Id == viewModel.MemberId).Select(m => m.GetFullName()).FirstAsync(),
                     Vehicles = data
 
                 };
@@ -328,9 +329,9 @@ namespace Garage2._0.Controllers
             {
                 return NotFound();
             }
+          ParkVehicle parkVehicle = await _context.ParkVehicle.Include(v => v.VehicleType).Include(v => v.Parkings).Include(v => v.Member).FirstAsync(v => v.VehicleTypeID == id);
 
-            var parkVehicle = await _context.ParkVehicle.FindAsync(id);
-            if (parkVehicle == null)
+             if (parkVehicle == null)
             {
                 return NotFound();
             }
@@ -342,7 +343,7 @@ namespace Garage2._0.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ParkingSlot, RegNumber,Color,Brand,Model,Wheels,CheckInTime")] ParkVehicle parkVehicle)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ParkingSlot,RegNumber,Color,Brand,Model,Wheels,CheckInTime, MemberId, VehicleTypeID, ParkingSpotId")] ParkVehicle parkVehicle)
         {
 
             if (id != parkVehicle.Id)
@@ -352,8 +353,9 @@ namespace Garage2._0.Controllers
 
             if (ModelState.IsValid)
             {
-                if (!_context.ParkVehicle.Any(x => x.RegNumber == parkVehicle.RegNumber && x.Id != parkVehicle.Id))
+                if (! await _context.ParkVehicle.AnyAsync(x => x.RegNumber == parkVehicle.RegNumber && x.Id != parkVehicle.Id))
                 {
+
                     try
                     {
                         _context.Update(parkVehicle);
