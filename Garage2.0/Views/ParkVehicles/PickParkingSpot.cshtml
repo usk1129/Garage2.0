@@ -1,5 +1,5 @@
-﻿@model Garage2._0.Models.CheckInMemberVehicleViewModel
-
+﻿@model Garage2._0.Models.PickParkingSpotViewModel
+@inject IMemberSelectListService service2
 @{
     ViewData["Title"] = "Check In Member";
 }
@@ -15,7 +15,7 @@
 <div class="row">
 
     <div class="col-md-4">
-        <form asp-action="CheckInMemberVehicle">
+        <form asp-action="PickParkingSpot">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="col-md-4">
 
@@ -23,20 +23,29 @@
 
 
             </div>
-            <div class="form-group">
-                <label asp-for="VehicleId" class="control-label">Vehicle</label>
-                <select asp-for="VehicleId" class="form-control" id="VehicleId"
-                        asp-items="@Model.Vehicles">
-                    <option value="">Choose Vehicle</option>
-                </select>
-                <span asp-validation-for="VehicleId" class="text-danger"></span>
+            <div class="col-md-4">
+
+                @Html.DisplayFor(model => model.RegNR)
+
 
             </div>
-            
-             @Html.HiddenFor(model => model.MemberId)
-             @Html.HiddenFor(model => model.MemberName)
-             @Html.HiddenFor(model => model.VehicleId)
+            <div class="form-group">
+                <label asp-for="ParkingSpotId" class="control-label">Parking Spot</label>
+                <select asp-for="ParkingSpotId" class="form-control" id="ParkingSpotId"
+                        asp-items="@Model.ParkingSpots">
+                    <option value="">Choose Vehicle</option>
+                </select>
+                <span asp-validation-for="ParkingSpotId" class="text-danger"></span>
 
+            </div>
+
+            
+             @Html.HiddenFor(model => model.MemberName)
+             @Html.HiddenFor(model => model.RegNR)
+             @Html.HiddenFor(model => model.Size)
+             
+             
+             @Html.HiddenFor(model => model.VehicleId)
             <div class="form-group">
                 <input type="submit" value="Park" class="btn btn-primary" id="SubmitId" />
             </div>
