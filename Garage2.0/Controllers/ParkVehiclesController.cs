@@ -348,13 +348,13 @@ namespace Garage2._0.Controllers
                 for (int i = 0; i < vehicle.VehicleType.Size; i++)
                 {
                     var spot = await _context.ParkingSpot.FirstOrDefaultAsync(t => t.ParkingSpotNr == (parkVehicle.ParkingSpotId + i));
-
+                    vehicle.Parkings.Add(spot);
                     spot.ParkVehicle = vehicle;
                     _context.Update(spot);
                 }
-                
+                _context.Update(vehicle);
 
-                
+
                 await _context.SaveChangesAsync();
 
 
@@ -503,6 +503,12 @@ namespace Garage2._0.Controllers
 
             if (parkVehicle != null)
             {
+                var parking = await _context.ParkingSpot.Where(x => x.ParkVehicleID == parkVehicle.Id).ToListAsync();
+                foreach (var item in parking)
+                {
+                    item.ParkVehicleID = null;
+                    _context.Update(item);
+                }
                 _context.ParkVehicle.Remove(parkVehicle);
                 await _context.SaveChangesAsync();
                 TempData["Success"] = $"{parkVehicle.RegNumber} has been checked out!";
@@ -534,8 +540,13 @@ namespace Garage2._0.Controllers
                     Price = CalcPrice(parkVehicle.CheckInTime, currentTime)
 
                 };
-
-                _context.ParkVehicle.Remove(parkVehicle);
+                var parking = await _context.ParkingSpot.Where(x => x.ParkVehicleID == parkVehicle.Id).ToListAsync();
+                foreach (var item in parking)
+                {
+                    item.ParkVehicleID = null;
+                    _context.Update(item);
+                }
+                    _context.ParkVehicle.Remove(parkVehicle);
                 await _context.SaveChangesAsync();
                 TempData["Success"] = $"{parkVehicle.RegNumber} has successfully been checked out!";
                 return View(receipt);
