@@ -66,7 +66,7 @@ namespace Garage2._0.Controllers
                     Owner = vehicle.Member.FirstName + " " + vehicle.Member.FirstName,
                     VehicleType = vehicle.VehicleType.Name
 
-                }) ;
+                });
 
             }
 
@@ -77,7 +77,7 @@ namespace Garage2._0.Controllers
         {
             var spots = await _context.ParkingSpot.ToListAsync();
 
-            List<GarageSlotModel> parkingSpots =  new List<GarageSlotModel>(); ;
+            List<GarageSlotModel> parkingSpots = new List<GarageSlotModel>(); ;
 
             foreach (var item in spots)
             {
@@ -204,9 +204,19 @@ namespace Garage2._0.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> CheckInMemberVehicleAsync(CheckInMemberViewModel viewModel)
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CheckInMember(CheckInMemberViewModel viewModel)
         {
-            var data = await _context.ParkVehicle.Where(v => v.MemberId == viewModel.MemberId)
+
+            var modelValid = ModelState.IsValid;
+
+            if (modelValid)
+            {
+
+
+                var data = await _context.ParkVehicle.Where(v => v.MemberId == viewModel.MemberId)
              .Select(v => v)
              .Select(t => new SelectListItem
              {
@@ -215,13 +225,54 @@ namespace Garage2._0.Controllers
              })
              .ToListAsync();
 
-            var model = new CheckInMemberVehicleViewModel
-            {
-                MemberName = await _context.Member.Where(m => m.Id == viewModel.MemberId).Select(m => m.FirstName + " " + m.LastName).FirstAsync(),
-                Vehicles = data
-            };
-            return View(model);
+                var model = new CheckInMemberVehicleViewModel
+                {
+                    MemberName = await _context.Member.Where(m => m.Id == viewModel.MemberId).Select(m => m.FirstName + " " + m.LastName).FirstAsync(),
+                    Vehicles = data
+
+                };
+
+                return View(nameof(CheckInMemberVehicle), model);
+                
+            }
+            return View(viewModel);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CheckInMemberVehicle(CheckInMemberVehicleViewModel parkVehicle)
+        {
+
+
+            //parkVehicle.Member = member;
+
+            var modelValid = ModelState.IsValid;
+
+            if (modelValid)
+            {
+
+                var member = await _context.Member.FindAsync(parkVehicle.MemberId);
+                var vehicle = await _context.ParkVehicle.FindAsync(parkVehicle.VehicleId);
+
+                parkVehicle.CheckInTime = DateTime.Now;
+                ParkingSpot spot = await _context.ParkingSpot.FirstOrDefaultAsync(t => t.ParkVehicle == null);
+                spot.ParkVehicle = vehicle;
+                vehicle.ParkingSpotId = spot.Id;
+                _context.Update(vehicle);
+                _context.Update(spot);
+                await _context.SaveChangesAsync();
+
+
+                TempData["Success"] = $"{vehicle.RegNumber} is successfully parked";
+                return RedirectToAction(nameof(Index));
+
+            }
+
+
+            return View(parkVehicle);
+        }
+
+        
         // POST: ParkVehicles/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -234,7 +285,7 @@ namespace Garage2._0.Controllers
 
             var member = await _context.Member.FindAsync(parkVehicle.MemberId);
             //parkVehicle.Member = member;
-            
+
             var modelValid = ModelState.IsValid;
 
             if (modelValid)
@@ -253,7 +304,7 @@ namespace Garage2._0.Controllers
                     //_context.Add(parkVehicle);
 
 
-                    
+
                     TempData["Success"] = $"{parkVehicle.RegNumber} is successfully parked";
                     return RedirectToAction(nameof(Index));
                 }
@@ -454,21 +505,21 @@ namespace Garage2._0.Controllers
         }
 
 
-         [HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddVehicleType([Bind("Name, Size")] VehicleType vehicleType)
         {
-            
+
             var modelValid = ModelState.IsValid;
 
             if (modelValid)
             {
 
-                    _context.Add(vehicleType);
-                    await _context.SaveChangesAsync();
-                    TempData["Success"] = $"{vehicleType.Name} is successfully added";
-                    return RedirectToAction(nameof(Index));
-                
+                _context.Add(vehicleType);
+                await _context.SaveChangesAsync();
+                TempData["Success"] = $"{vehicleType.Name} is successfully added";
+                return RedirectToAction(nameof(Index));
+
             }
 
 
