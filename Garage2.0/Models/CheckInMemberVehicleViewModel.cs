@@ -11,8 +11,7 @@ namespace Garage2._0.Models
         public int VehicleId { get; set; }
         public int? MemberId { get; set; }
 
-        [Display(Name = "Check-In Time")]
-        public DateTime CheckInTime { get; set; }
+
     }
 
 
