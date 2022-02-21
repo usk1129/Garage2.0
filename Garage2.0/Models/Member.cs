@@ -15,12 +15,12 @@
         public int Age { get; set; }
 
         // Nav Prop
-        public  ICollection<ParkVehicle> Vehicles { get; set; } = new List<ParkVehicle>();
+        public ICollection<ParkVehicle> Vehicles { get; set; } = new List<ParkVehicle>();
         public Member()
         {
         }
 
-        public Member(string avatar,string firstName, string lastName, string personNumber, int age)
+        public Member(string avatar, string firstName, string lastName, string personNumber, int age)
         {
             Avatar = avatar;
             FirstName = firstName;

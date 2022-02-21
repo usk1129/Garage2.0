@@ -5,7 +5,7 @@ namespace Garage2._0.Models
     public class ParkVehicle
     {
         public int Id { get; set; }
-       // public VehicleType VehicleType { get; set; }
+        // public VehicleType VehicleType { get; set; }
 
         //public string ParkingSlot { get; set; }
         //        public IEnumerable<SelectListItem> ParkingSlots { get; set; } 
@@ -53,16 +53,16 @@ namespace Garage2._0.Models
 
         public ParkVehicle(string regNr, string color, string brand, string model, int wheels, DateTime? checkInTime, int memberId)
         {
-            
+
             RegNumber = regNr;
-            Color = color; 
+            Color = color;
             Brand = brand;
             Model = model;
             Wheels = wheels;
             CheckInTime = checkInTime;
             MemberId = memberId;
             //VehicleTypeID = vehicleTypeId;
-           
+
 
         }
 

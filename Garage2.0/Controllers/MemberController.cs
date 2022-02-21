@@ -81,7 +81,7 @@ namespace Garage2._0.Controllers
             {
 
                 bool old = member.PersonNumber.Contains('+');
-                string[] words = member.PersonNumber.Split('-','+');
+                string[] words = member.PersonNumber.Split('-', '+');
                 var today = DateTime.Today;
                 int lastTwoDigitsOfYear = int.Parse(today.ToString("yy"));
 
@@ -196,11 +196,11 @@ namespace Garage2._0.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var member = await _context.Member.FindAsync(id);
-           // var hej = member.Vehicles.FirstOrDefault();
-           if (member != null)
+            // var hej = member.Vehicles.FirstOrDefault();
+            if (member != null)
             {
                 var parkedVehicles = _context.ParkVehicle.Where(p => p.MemberId == id);
-                
+
                 foreach (var vehicle in parkedVehicles)
                 {
                     if (vehicle.ParkingSpotId != null)
