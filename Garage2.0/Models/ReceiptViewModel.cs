@@ -5,7 +5,7 @@ namespace Garage2._0.Models
     public class ReceiptViewModel
     {
         public int Id { get; set; }
-        public VehicleType VehicleType { get; set; }
+        public string VehicleType { get; set; }
 
         public string RegNumber { get; set; }
 
@@ -17,6 +17,7 @@ namespace Garage2._0.Models
 
 
         public string Model { get; set; }
+        public string Owner { get; set; }
 
 
         public int Wheels { get; set; }

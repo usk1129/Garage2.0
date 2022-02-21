@@ -463,11 +463,11 @@ namespace Garage2._0.Controllers
                 if (regNrDuplicate == default)
                 {
 
-                    parkVehicle.CheckInTime = DateTime.Now;
+                    //parkVehicle.CheckInTime = DateTime.Now;
                     VehicleType type = await _context.VehicleType.FirstOrDefaultAsync(t => t.Id == parkVehicle.VehicleTypeID);
                     type.Vehicles.Add(parkVehicle);
-                    ParkingSpot spot = await _context.ParkingSpot.FirstOrDefaultAsync(s => s.ParkingSpotNr == parkVehicle.ParkingSpotId);
-                    spot.ParkVehicle = parkVehicle;
+                    //ParkingSpot spot = await _context.ParkingSpot.FirstOrDefaultAsync(s => s.ParkingSpotNr == parkVehicle.ParkingSpotId);
+                    //spot.ParkVehicle = parkVehicle;
                     await _context.SaveChangesAsync();
 
                     //_context.Add(parkVehicle);
@@ -582,9 +582,12 @@ namespace Garage2._0.Controllers
                 foreach (var item in parking)
                 {
                     item.ParkVehicleID = null;
+            
                     _context.Update(item);
                 }
-                _context.ParkVehicle.Remove(parkVehicle);
+                //_context.ParkVehicle.Remove(parkVehicle);
+                parkVehicle.CheckInTime = null;
+                parkVehicle.ParkingSpotId = null;
                 await _context.SaveChangesAsync();
                 TempData["Success"] = $"{parkVehicle.RegNumber} has been checked out!";
             }
@@ -599,10 +602,14 @@ namespace Garage2._0.Controllers
             var currentTime = DateTime.Now;
             var parkVehicle = await _context.ParkVehicle
                 .FirstOrDefaultAsync(m => m.Id == id);
+            var  member = await _context.Member.FirstAsync(m => m.Id == parkVehicle.MemberId);
+            var type = await _context.VehicleType.FirstAsync(m => m.Id == parkVehicle.VehicleTypeID);
             if (parkVehicle != default)
             {
                 var receipt = new ReceiptViewModel
                 {
+                    Owner = member.GetFullName(),
+                    VehicleType = type.Name,
                     Id = id,
                     RegNumber = parkVehicle.RegNumber,
                     Color = parkVehicle.Color,
@@ -621,7 +628,9 @@ namespace Garage2._0.Controllers
                     item.ParkVehicleID = null;
                     _context.Update(item);
                 }
-                    _context.ParkVehicle.Remove(parkVehicle);
+                // _context.ParkVehicle.Remove(parkVehicle);
+                parkVehicle.CheckInTime = null;
+                parkVehicle.ParkingSpotId = null;
                 await _context.SaveChangesAsync();
                 TempData["Success"] = $"{parkVehicle.RegNumber} has successfully been checked out!";
                 return View(receipt);
@@ -657,6 +666,7 @@ namespace Garage2._0.Controllers
             {
                 wheels += x.Wheels;
                 totalVehicles += 1;
+                if (x.CheckInTime != null)
                 currentFees += CalcPrice((DateTime)x.CheckInTime, currentTime);
 
             });
