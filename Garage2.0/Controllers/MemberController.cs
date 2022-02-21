@@ -1,4 +1,5 @@
 ﻿#nullable disable
+using Bogus;
 using Garage2._0.Data;
 using Garage2._0.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ namespace Garage2._0.Controllers
     public class MemberController : Controller
     {
         private readonly Garage2_0Context _context;
+        private Faker faker = new Faker("sv");
 
         public MemberController(Garage2_0Context context)
         {
@@ -20,6 +22,28 @@ namespace Garage2._0.Controllers
         {
             return View(await _context.Member.ToListAsync());
         }
+
+        public async Task<IActionResult> Index2()
+        {
+            var members = await _context.Member
+                .Include(m => m.Vehicles)
+                .Select(m => new MemberViewModel
+                {
+                    Id = m.Id,
+                    Age = m.Age,
+                    Avatar = m.Avatar,
+                    FirstName = m.FirstName,
+                    LastName = m.LastName,
+                    PersonNumber = m.PersonNumber,
+                    NumberOfVehicles = m.Vehicles.Count()
+                })
+                .ToListAsync();
+
+            return View(nameof(Index2), members);
+        }
+
+
+
 
         // GET: Member/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -71,6 +95,7 @@ namespace Garage2._0.Controllers
                     age = today.Year - int.Parse(words[0].Substring(0, 4));
 
                 member.Age = age;
+                member.Avatar = faker.Internet.Avatar();
 
                 _context.Add(member);
                 await _context.SaveChangesAsync();
