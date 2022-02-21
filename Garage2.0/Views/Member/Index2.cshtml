@@ -1,17 +1,10 @@
-﻿@model IEnumerable<Garage2._0.Models.Member>
+﻿@model IEnumerable<Garage2._0.Models.MemberViewModel>
 
 @{
     ViewData["Title"] = "Index";
 }
-@if ( TempData["Success"] != null ) 
-{
-    <div class="alert alert-success">@TempData["Success"]</div>
-}
-<h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<h1>Index</h1>
 
 <form asp-action="Filter">
     <div class="input-group mb-3">
@@ -42,6 +35,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Age)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumberOfVehicles)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -63,12 +59,17 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Age)
             </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumberOfVehicles)
+            </td>
 
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
+
+
         </tr>
 }
     </tbody>
