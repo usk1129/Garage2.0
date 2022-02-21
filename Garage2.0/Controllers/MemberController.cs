@@ -55,6 +55,8 @@ namespace Garage2._0.Controllers
         {
             if (ModelState.IsValid)
             {
+
+                bool old = member.PersonNumber.Contains('+');
                 string[] words = member.PersonNumber.Split('-','+');
                 var today = DateTime.Today;
                 int lastTwoDigitsOfYear = int.Parse(today.ToString("yy"));
@@ -63,10 +65,24 @@ namespace Garage2._0.Controllers
                 if (words[0].Length == 6)
                 {
                     int ageTwoDigits = int.Parse(words[0].Substring(0, 2));
-                    if (lastTwoDigitsOfYear < ageTwoDigits)
-                        age = lastTwoDigitsOfYear + 100 - ageTwoDigits;
+                    if (old)
+                    {
+
+                        if (lastTwoDigitsOfYear < ageTwoDigits)
+                            age = 100 + lastTwoDigitsOfYear + 100 - ageTwoDigits;
+                        else
+                            age = 100 + lastTwoDigitsOfYear - ageTwoDigits;
+
+                    }
                     else
-                        age = lastTwoDigitsOfYear - ageTwoDigits;
+                    {
+
+
+                        if (lastTwoDigitsOfYear < ageTwoDigits)
+                            age = lastTwoDigitsOfYear + 100 - ageTwoDigits;
+                        else
+                            age = lastTwoDigitsOfYear - ageTwoDigits;
+                    }
                 }
                 else
                     age = today.Year - int.Parse(words[0].Substring(0, 4));
