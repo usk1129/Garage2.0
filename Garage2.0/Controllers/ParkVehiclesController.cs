@@ -49,13 +49,15 @@ namespace Garage2._0.Controllers
 
             return View(nameof(Index), await model.ToListAsync());
         }
-        public async Task<IActionResult> Index2()
+        public async Task<IActionResult> Index2(string? sortOrder)
         {
 
             IQueryable<ParkVehicle> vehicles = _context.ParkVehicle.Where(v => v.ParkingSpotId != null).Include(v => v.VehicleType).Include(v => v.Parkings).Include(v => v.Member);
             List<IndexViewModel> model = new List<IndexViewModel>();
+            var timeNow = DateTime.Now;
             foreach (var vehicle in vehicles)
             {
+
                 model.Add(new IndexViewModel
                 {
                     RegNumber = vehicle.RegNumber,
@@ -65,10 +67,83 @@ namespace Garage2._0.Controllers
                     Wheels = vehicle.Wheels,
                     ParkingSpotNR = (int)vehicle.ParkingSpotId,
                     Owner = vehicle.Member.GetFullName(),
-                    VehicleType = vehicle.VehicleType.Name
+                    VehicleType = vehicle.VehicleType.Name,
+                    ParkTime    = timeNow - vehicle.CheckInTime
+
 
                 });
 
+            }
+            ViewBag.MemberSortParm = sortOrder == "Member" ? "member_desc" : "Member";
+            ViewBag.VehicleSortParm = String.IsNullOrEmpty(sortOrder) ? "vehicle_desc" : "";
+            ViewBag.ParkingSortParm = sortOrder == "Parking Slot" ? "park_desc" : "Parking Slot";
+            ViewBag.RegNumberSortParm = sortOrder == "RegNumber" ? "RegNumber_desc" : "RegNumber";
+            ViewBag.ColorSortParm = sortOrder == "Color" ? "Color_desc" : "Color";
+            ViewBag.BrandSortParm = sortOrder == "Brand" ? "Brand_desc" : "Brand";
+            ViewBag.ModelSortParm = sortOrder == "Model" ? "Model_desc" : "Model";
+            ViewBag.WheelsSortParm = sortOrder == "Wheels" ? "Wheels_desc" : "Wheels";
+            ViewBag.DurationSortParm = sortOrder == "Duration" ? "Duration_desc" : "Duration";
+
+            switch (sortOrder)
+            {
+
+                case "vehicle_desc":
+                    model = model.OrderByDescending(v => v.VehicleType).ToList();
+                    break;
+                case "park_desc":
+                    model = model.OrderByDescending(v => v.ParkingSpotNR).ToList();
+                    break;
+                case "Parking Slot":
+                    model = model.OrderBy(v => v.ParkingSpotNR).ToList();
+                    break;
+                case "RegNumber":
+                    model = model.OrderBy(v => v.RegNumber).ToList();
+                    break;
+                case "RegNumber_desc":
+                    model = model.OrderByDescending(v => v.RegNumber).ToList();
+                    break;
+                case "Color":
+                    model = model.OrderBy(v => v.Color).ToList();
+                    break;
+                case "Color_desc":
+                    model = model.OrderByDescending(v => v.Color).ToList();
+                    break;
+                case "Brand":
+                    model = model.OrderBy(v => v.Brand).ToList();
+                    break;
+                case "Brand_desc":
+                    model = model.OrderByDescending(v => v.Brand).ToList();
+                    break;
+                case "Model":
+                    model = model.OrderBy(v => v.Model).ToList();
+                    break;
+                case "Model_desc":
+                    model = model.OrderByDescending(v => v.Model).ToList();
+                    break;
+                case "Wheels":
+                    model = model.OrderBy(v => v.Wheels).ToList();
+                    break;
+                case "Wheels_desc":
+                    model = model.OrderByDescending(v => v.Wheels).ToList();
+                    break;
+                case "Duration":
+                    model = model.OrderBy(v => v.ParkTime).ToList();
+                    break;
+                case "Duration_desc":
+                    model = model.OrderByDescending(v => v.ParkTime).ToList();
+                    break;
+
+                case "member_desc":
+                    model = model.OrderByDescending(v => v.Owner).ToList();
+                    break;
+
+                case "Member":
+                    model = model.OrderBy(v => v.Owner).ToList();
+                    break;
+
+                default:
+                    model = model.OrderBy(v => v.VehicleType).ToList();
+                    break;
             }
 
             return View(nameof(Index2), model);

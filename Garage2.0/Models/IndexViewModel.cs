@@ -26,5 +26,6 @@ namespace Garage2._0.Models
         public string Owner { get; set; }
 
         public string VehicleType { get; set; }
+        public TimeSpan ParkTime { get; set; }
     }
 }

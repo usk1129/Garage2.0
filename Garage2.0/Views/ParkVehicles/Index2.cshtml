@@ -43,28 +43,31 @@
         <thead>
             <tr>
                 <th scope="col">
-                   @Html.ActionLink("Owner", "Index", new { sortOrder = ViewBag.VehicleSortParm})
+                   @Html.ActionLink("Owner", "Index2", new { sortOrder = ViewBag.MemberSortParm})
                 </th>
                 <th scope="col">
-                   @Html.ActionLink("Vehicle Type", "Index", new { sortOrder = ViewBag.VehicleSortParm})
+                   @Html.ActionLink("Vehicle Type", "Index2", new { sortOrder = ViewBag.VehicleSortParm})
                 </th>
                 <th scope="col">
-                   @Html.ActionLink("Parking Slot", "Index", new { sortOrder = ViewBag.ParkingSortParm})
+                   @Html.ActionLink("Parking Slot", "Index2", new { sortOrder = ViewBag.ParkingSortParm})
                 </th>
                 <th>
-                    @Html.ActionLink("RegNumber", "Index", new { sortOrder = ViewBag.RegNumberSortParm})
+                    @Html.ActionLink("RegNumber", "Index2", new { sortOrder = ViewBag.RegNumberSortParm})
                 </th>
                 <th>
-                    @Html.ActionLink("Color", "Index", new { sortOrder = ViewBag.ColorSortParm})
+                    @Html.ActionLink("Color", "Index2", new { sortOrder = ViewBag.ColorSortParm})
                 </th>
                 <th>
-                   @Html.ActionLink("Brand", "Index", new { sortOrder = ViewBag.BrandSortParm})
+                   @Html.ActionLink("Brand", "Index2", new { sortOrder = ViewBag.BrandSortParm})
                 </th>
                 <th>
-                    @Html.ActionLink("Model", "Index", new { sortOrder = ViewBag.ModelSortParm})
+                    @Html.ActionLink("Model", "Index2", new { sortOrder = ViewBag.ModelSortParm})
                 </th>
                 <th>
-                    @Html.ActionLink("Wheels", "Index", new { sortOrder = ViewBag.WheelsSortParm})
+                    @Html.ActionLink("Wheels", "Index2", new { sortOrder = ViewBag.WheelsSortParm})
+                </th>
+                <th>
+                    @Html.ActionLink("Parking duration", "Index2", new { sortOrder = ViewBag.DurationSortParm})
                 </th>
 
             </tr>
@@ -99,7 +102,9 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Wheels)
                     </td>
-
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ParkTime)
+                    </td>
                 </tr>
             }
         </tbody>
