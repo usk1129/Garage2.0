@@ -54,6 +54,7 @@ namespace Garage2._0.Controllers
             }
 
             var member = await _context.Member
+                .Include(m => m.Vehicles)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (member == null)
             {
@@ -78,7 +79,7 @@ namespace Garage2._0.Controllers
         {
             if (ModelState.IsValid)
             {
-                string[] words = member.PersonNumber.Split('-');
+                string[] words = member.PersonNumber.Split('-','+');
                 var today = DateTime.Today;
                 int lastTwoDigitsOfYear = int.Parse(today.ToString("yy"));
 
