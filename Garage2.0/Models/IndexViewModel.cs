@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-
-namespace Garage2._0.Models
+﻿namespace Garage2._0.Models
 {
     public class IndexViewModel
     {

@@ -1,5 +1,4 @@
 ﻿using Garage2._0.Data;
-using Garage2._0.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,14 +14,14 @@ namespace Garage2._0.Services
 
         public async Task<IEnumerable<SelectListItem>> GetMembersAsync()
         {
-             return await db.Member
-            .Select(v => v)
-            .Select(t => new SelectListItem
-            {
-                Text = t.FirstName + " " + t.LastName,
-                Value = t.Id.ToString()
-            })
-            .ToListAsync();
+            return await db.Member
+           .Select(v => v)
+           .Select(t => new SelectListItem
+           {
+               Text = t.FirstName + " " + t.LastName,
+               Value = t.Id.ToString()
+           })
+           .ToListAsync();
         }
 
     }
