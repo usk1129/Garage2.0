@@ -1,0 +1,49 @@
+﻿@model Garage2._0.Models.CheckInMemberViewModel
+@inject IMemberSelectListService service2
+@{
+    ViewData["Title"] = "Check In Member";
+}
+
+
+
+<h1>Park your vehicle</h1>
+
+<h4>Enter the vehicle's data here</h4>
+<hr />
+
+
+
+
+<div class="row">
+
+    <div class="col-md-4">
+        <form asp-action="CheckInMember" >
+            <div class="form-group">
+                <label asp-for="MemberId" class="control-label">Owner</label>
+                <select asp-for="MemberId" class="form-control" id="MemberId" 
+                asp-items="@await service2.GetMembersAsync()" >
+                <option value="">Choose Member</option>
+                </select>
+                <span asp-validation-for="MemberId" class="text-danger"></span>
+                 
+            </div>
+            <div class="form-group">
+                <input type="submit" value="CheckInMember" class="btn btn-primary" id="CheckInMember"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    <script type="text/javascript">
+
+    </script>
+}
+}
+

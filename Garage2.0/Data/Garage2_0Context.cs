@@ -16,5 +16,6 @@ namespace Garage2._0.Data
         public DbSet<Garage2._0.Models.Member> Member { get; set; }
 
         public DbSet<Garage2._0.Models.ParkingSpot> ParkingSpot { get; set; }
+
     }
 }
