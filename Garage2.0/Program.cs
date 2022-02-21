@@ -1,9 +1,7 @@
 using Garage2._0.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Garage2._0.Data;
 using Garage2._0.Extensions;
 using Garage2._0.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -2,11 +2,9 @@
 using Garage2._0.Data;
 using Garage2._0.Helpers;
 using Garage2._0.Models;
-using Garage2._0.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Garage2._0.Controllers
 {
@@ -68,7 +66,7 @@ namespace Garage2._0.Controllers
                     ParkingSpotNR = (int)vehicle.ParkingSpotId,
                     Owner = vehicle.Member.GetFullName(),
                     VehicleType = vehicle.VehicleType.Name,
-                    ParkTime    = (TimeSpan)(timeNow - vehicle.CheckInTime)
+                    ParkTime = (TimeSpan)(timeNow - vehicle.CheckInTime)
 
 
                 });
@@ -406,10 +404,10 @@ namespace Garage2._0.Controllers
             return View(parkVehicle);
 
         }
-            // POST: ParkVehicles/Create
-            // To protect from overposting attacks, enable the specific properties you want to bind to.
-            // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-            [HttpPost]
+        // POST: ParkVehicles/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ParkVehicle parkVehicle)
         {
@@ -461,9 +459,9 @@ namespace Garage2._0.Controllers
             {
                 return NotFound();
             }
-          ParkVehicle parkVehicle = await _context.ParkVehicle.Include(v => v.VehicleType).Include(v => v.Parkings).Include(v => v.Member).FirstAsync(v => v.VehicleTypeID == id);
+            ParkVehicle parkVehicle = await _context.ParkVehicle.Include(v => v.VehicleType).Include(v => v.Parkings).Include(v => v.Member).FirstAsync(v => v.VehicleTypeID == id);
 
-             if (parkVehicle == null)
+            if (parkVehicle == null)
             {
                 return NotFound();
             }
@@ -485,7 +483,7 @@ namespace Garage2._0.Controllers
 
             if (ModelState.IsValid)
             {
-                if (! await _context.ParkVehicle.AnyAsync(x => x.RegNumber == parkVehicle.RegNumber && x.Id != parkVehicle.Id))
+                if (!await _context.ParkVehicle.AnyAsync(x => x.RegNumber == parkVehicle.RegNumber && x.Id != parkVehicle.Id))
                 {
 
                     try
@@ -546,7 +544,7 @@ namespace Garage2._0.Controllers
                 foreach (var item in parking)
                 {
                     item.ParkVehicleID = null;
-            
+
                     _context.Update(item);
                 }
                 //_context.ParkVehicle.Remove(parkVehicle);
@@ -563,7 +561,7 @@ namespace Garage2._0.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Receipt(int id)
         {
-            
+
             var parkVehicle = await _context.ParkVehicle
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (parkVehicle.CheckInTime != null)
@@ -637,7 +635,7 @@ namespace Garage2._0.Controllers
                 wheels += x.Wheels;
                 totalVehicles += 1;
                 if (x.CheckInTime != null)
-                currentFees += CalcPrice((DateTime)x.CheckInTime, currentTime);
+                    currentFees += CalcPrice((DateTime)x.CheckInTime, currentTime);
 
             });
 

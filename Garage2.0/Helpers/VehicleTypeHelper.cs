@@ -1,6 +1,4 @@
-﻿using Garage2._0.Models;
-
-namespace Garage2._0.Helpers
+﻿namespace Garage2._0.Helpers
 {
     public class VehicleTypeHelper
     {

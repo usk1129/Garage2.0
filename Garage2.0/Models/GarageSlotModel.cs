@@ -5,7 +5,7 @@ namespace Garage2._0.Models
     public class GarageSlotModel
     {
 
-//        [Display(Name = "Garage Capacity")]
+        //        [Display(Name = "Garage Capacity")]
         //public int Capacity { get; set; }
 
         [Display(Name = "Garage Slot")]
