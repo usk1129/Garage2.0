@@ -25,7 +25,7 @@ namespace Garage2._0.Models
         [Range(0, 10)]
         public int Wheels { get; set; }
         [Display(Name = "Check-In Time")]
-        public DateTime CheckInTime { get; set; }
+        public DateTime? CheckInTime { get; set; }
 
         //[ForeignKey("Member")]
 
@@ -51,7 +51,7 @@ namespace Garage2._0.Models
         {
         }
 
-        public ParkVehicle(string regNr, string color, string brand, string model, int wheels, DateTime checkInTime, int memberId)
+        public ParkVehicle(string regNr, string color, string brand, string model, int wheels, DateTime? checkInTime, int memberId)
         {
             
             RegNumber = regNr;

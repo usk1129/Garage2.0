@@ -39,25 +39,25 @@ namespace Garage2._0.Data
             var now = DateTime.Now;
 
             var type = new VehicleType("Motorcycle", 1);
-            type.Vehicles.Add(new ParkVehicle("ABC123", "BLUE", "Volvo", "V70", 4, now, 1));
+            type.Vehicles.Add(new ParkVehicle("ABC123", "BLUE", "Volvo", "V70", 4, null, 1));
             vehicleTypes.Add(type);
             type = new VehicleType("Computer Chair", 1);
-        type.Vehicles.Add(new ParkVehicle("BBC123", "YELLOW", "BMW", "V70", 2, now, 3));
+        type.Vehicles.Add(new ParkVehicle("BBC123", "YELLOW", "BMW", "V70", 2, null, 3));
         vehicleTypes.Add(type);
         type = new VehicleType("Tractor", 2);
-        type.Vehicles.Add(new ParkVehicle("CBC123", "BLACK", "SAAB", "V70", 6, now, 5));
+        type.Vehicles.Add(new ParkVehicle("CBC123", "BLACK", "SAAB", "V70", 6, null, 5));
         vehicleTypes.Add(type);
         type = new VehicleType("Bus", 3);
-        type.Vehicles.Add(new ParkVehicle("DBC123", "WHITE", "SAAB", "AAA", 4, now, 6));
+        type.Vehicles.Add(new ParkVehicle("DBC123", "WHITE", "SAAB", "AAA", 4, null, 6));
         vehicleTypes.Add(type);
         type = new VehicleType("Car", 1);
-        type.Vehicles.Add(new ParkVehicle("EBC123", "GREEN", "Volvo", "V70", 4, now, 1));
+        type.Vehicles.Add(new ParkVehicle("EBC123", "GREEN", "Volvo", "V70", 4, null, 1));
         vehicleTypes.Add(type);
         type = new VehicleType("Truck", 2);
-        type.Vehicles.Add(new ParkVehicle("ABC123", "ORANGE", "RANDOM", "JA", 10, now, 4));
+        type.Vehicles.Add(new ParkVehicle("ABC123", "ORANGE", "RANDOM", "JA", 10, null, 4));
         vehicleTypes.Add(type);
         type = new VehicleType("Forklift", 1);
-        type.Vehicles.Add(new ParkVehicle("ABC333", "BLUE", "Volvo", "V70", 4, now, 3));
+        type.Vehicles.Add(new ParkVehicle("ABC333", "BLUE", "Volvo", "V70", 4, null, 3));
         vehicleTypes.Add(type);
 
 

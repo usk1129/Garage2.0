@@ -68,7 +68,7 @@ namespace Garage2._0.Controllers
                     ParkingSpotNR = (int)vehicle.ParkingSpotId,
                     Owner = vehicle.Member.GetFullName(),
                     VehicleType = vehicle.VehicleType.Name,
-                    ParkTime    = timeNow - vehicle.CheckInTime
+                    ParkTime    = (TimeSpan)(timeNow - vehicle.CheckInTime)
 
 
                 });
@@ -413,7 +413,7 @@ namespace Garage2._0.Controllers
                     .Include(v => v.VehicleType)
                     .FirstOrDefaultAsync(v => v.Id == parkVehicle.VehicleId);
 
-                parkVehicle.CheckInTime = DateTime.Now;
+                vehicle.CheckInTime = DateTime.Now;
                 // ParkingSpot spot = await _context.ParkingSpot.FirstOrDefaultAsync(t => t.ParkingSpotNr == parkVehicle.ParkingSpotId);
                 //  spot.ParkVehicle = vehicle;
 
@@ -612,7 +612,7 @@ namespace Garage2._0.Controllers
                     CheckInTime = parkVehicle.CheckInTime,
                     CheckOutTime = currentTime,
                     ParkedTime = currentTime - parkVehicle.CheckInTime,
-                    Price = CalcPrice(parkVehicle.CheckInTime, currentTime)
+                    Price = CalcPrice((DateTime)parkVehicle.CheckInTime, currentTime)
 
                 };
                 var parking = await _context.ParkingSpot.Where(x => x.ParkVehicleID == parkVehicle.Id).ToListAsync();
@@ -657,7 +657,7 @@ namespace Garage2._0.Controllers
             {
                 wheels += x.Wheels;
                 totalVehicles += 1;
-                currentFees += CalcPrice(x.CheckInTime, currentTime);
+                currentFees += CalcPrice((DateTime)x.CheckInTime, currentTime);
 
             });
 
