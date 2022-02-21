@@ -18,7 +18,6 @@ namespace Garage2._0.Models
 
         public string Model { get; set; }
 
-
         public int Wheels { get; set; }
 
         public int ParkingSpotNR { get; set; }
