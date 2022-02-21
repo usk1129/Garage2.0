@@ -154,8 +154,34 @@ namespace Garage2._0.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var member = await _context.Member.FindAsync(id);
-            _context.Member.Remove(member);
-            await _context.SaveChangesAsync();
+           // var hej = member.Vehicles.FirstOrDefault();
+           if (member != null)
+            {
+                var parkedVehicles = _context.ParkVehicle.Where(p => p.MemberId == id);
+                
+                foreach (var vehicle in parkedVehicles)
+                {
+                    if (vehicle.ParkingSpotId != null)
+                    {
+
+                        TempData["Success"] = $"{member.GetFullName()} currently has unpaid parking fees so can not be removed";
+                        return RedirectToAction(nameof(Index));
+
+                    }
+                    //var spots = _context.ParkingSpot.Where(s => s.ParkVehicleID == vehicle.Id);
+                    //code for removing parked vehicles rather than warning
+                    //foreach (var spot in spots)
+                    //{
+                    //    spot.ParkVehicleID = null;
+                    //}
+                }
+
+                _context.Member.Remove(member);
+                await _context.SaveChangesAsync();
+
+                TempData["Success"] = $"Member has been deleted!";
+
+            }
             return RedirectToAction(nameof(Index));
         }
 
