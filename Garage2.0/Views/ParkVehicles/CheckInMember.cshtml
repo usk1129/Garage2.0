@@ -1,4 +1,4 @@
-﻿@model Garage2._0.Models.CheckInMemberViewModel
+﻿@model Garage2._0.Models.CheckInMemberVehicleViewModel
 @inject IMemberSelectListService service2
 @{
     ViewData["Title"] = "Check In Member";
@@ -15,19 +15,20 @@
 
 
 <div class="row">
-
-    <div class="col-md-4">
-        <form asp-action="CheckInMember" >
+     <div class="col-sm-2 form-group">
+         <form asp-action="CheckInMember" >
             <div class="form-group">
-                <label asp-for="MemberId" class="control-label">Owner</label>
-                <select asp-for="MemberId" class="form-control" id="MemberId" 
-                asp-items="@await service2.GetMembersAsync()" >
-                <option value="">Choose Member</option>
-                </select>
+                <label asp-for="MemberId" class="control-label">Member</label>
+            <select asp-for="MemberId" class="form-control" id="MemberId"
+                    asp-items="@await service2.GetMembersAsync()"></select>
                 <span asp-validation-for="MemberId" class="text-danger"></span>
-                 
-            </div>
+             </div>
             <div class="form-group">
+                <label asp-for="VehicleId" class="control-label">Owner</label>
+            <select asp-for="VehicleId" class="form-control"id="VehicleId"></select>
+                <span asp-validation-for="VehicleId" class="text-danger"></span>
+           </div>
+               <div class="form-group">
                 <input type="submit" value="CheckInMember" class="btn btn-primary" id="CheckInMember"/>
             </div>
         </form>
@@ -42,8 +43,32 @@
     @{
     await Html.RenderPartialAsync("_ValidationScriptsPartial");
     <script type="text/javascript">
-
-    </script>
+$(document).ready(function () {
+    getSubCategoryListByMemberId();
+})
+$("#MemberId").change(function () {
+    getSubCategoryListByMemberId();
+});
+var getSubCategoryListByMemberId = function () {
+    $.ajax({
+        url: '@Url.Action("GetSubCategoryByMemberId","ParkVehicles")',
+        type: 'GET',
+        data: {
+            MemberId: $('#MemberId').val(),
+        },
+        success: function (data) {
+            $('#VehicleId').find('option').remove()
+            $(data).each(
+                function (index, item) {
+                    $('#VehicleId').append('<option value="' + item.vehicleId + '">' + item.vehicleName + '</option>')
+                });
+        },
+        error: function () {
+        }
+    });
+}
+</script>
+   
 }
 }
 
