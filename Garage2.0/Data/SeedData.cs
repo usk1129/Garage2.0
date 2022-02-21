@@ -35,38 +35,33 @@ namespace Garage2._0.Data
         private static IEnumerable<VehicleType> GetVehicleTypes()
         {
             var vehicleTypes = new List<VehicleType>();
-        var now = DateTime.Now;
 
-        var type = new VehicleType("Motorcycle", 1);
+            var now = DateTime.Now;
+
+            var type = new VehicleType("Motorcycle", 1);
             type.Vehicles.Add(new ParkVehicle("ABC123", "BLUE", "Volvo", "V70", 4, now, 1));
             vehicleTypes.Add(type);
             type = new VehicleType("Computer Chair", 1);
-        type.Vehicles.Add(new ParkVehicle("ABC123", "YELLOW", "Volvo", "V70", 4, now, 3));
-        vehicleTypes.Add(type);
-        type = new VehicleType("Tractor", 2);
-        type.Vehicles.Add(new ParkVehicle("ABC123", "BLACK", "Volvo", "V70", 4, now, 5));
-        vehicleTypes.Add(type);
-        type = new VehicleType("Bus", 3);
-        type.Vehicles.Add(new ParkVehicle("ABC123", "WHITE", "Volvo", "V70", 4, now, 6));
-        vehicleTypes.Add(type);
-        type = new VehicleType("Car", 1);
-        type.Vehicles.Add(new ParkVehicle("ABC123", "GREEN", "Volvo", "V70", 4, now, 1));
-        vehicleTypes.Add(type);
-        type = new VehicleType("Truck", 2);
-        type.Vehicles.Add(new ParkVehicle("ABC123", "ORANGE", "Volvo", "V70", 4, now, 4));
-        vehicleTypes.Add(type);
-        type = new VehicleType("Forklift", 1);
-        type.Vehicles.Add(new ParkVehicle("ABC123", "BLUE", "Volvo", "V70", 4, now, 3));
-        vehicleTypes.Add(type);
+            type.Vehicles.Add(new ParkVehicle("ABC123", "YELLOW", "Volvo", "V70", 4, now, 3));
+            vehicleTypes.Add(type);
+            type = new VehicleType("Tractor", 2);
+            type.Vehicles.Add(new ParkVehicle("ABC123", "BLACK", "Volvo", "V70", 4, now, 5));
+            vehicleTypes.Add(type);
+            type = new VehicleType("Bus", 3);
+            type.Vehicles.Add(new ParkVehicle("ABC123", "WHITE", "Volvo", "V70", 4, now, 6));
+            vehicleTypes.Add(type);
+            type = new VehicleType("Car", 1);
+            type.Vehicles.Add(new ParkVehicle("ABC123", "GREEN", "Volvo", "V70", 4, now, 1));
+            vehicleTypes.Add(type);
+            type = new VehicleType("Truck", 2);
+            type.Vehicles.Add(new ParkVehicle("ABC123", "ORANGE", "Volvo", "V70", 4, now, 4));
+            vehicleTypes.Add(type);
+            type = new VehicleType("Forklift", 1);
+            type.Vehicles.Add(new ParkVehicle("ABC123", "BLUE", "Volvo", "V70", 4, now, 3));
+            vehicleTypes.Add(type);
 
 
-
-
-
-
-
-
-        return vehicleTypes;
+            return vehicleTypes;
         }
         private static IEnumerable<Member> GetMembers()
         {
@@ -83,12 +78,10 @@ namespace Garage2._0.Data
                 var member = new Member(avatar,fName, lName, PersonNumber, age);
                 members.Add(member);
             }
-
-           
-
-
             return members;
         }
+
+      
         private static IEnumerable<ParkingSpot> GetParkinSpots(IConfiguration configuration)
         {
             var parkSpot = new List<ParkingSpot>();
