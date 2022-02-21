@@ -7,7 +7,7 @@
         public string Name { get; set; }
         public int Size { get; set; }
 
-        public ICollection<ParkVehicle> Vehicles {get; set;} = new List<ParkVehicle>();
+        public ICollection<ParkVehicle> Vehicles { get; set; } = new List<ParkVehicle>();
 
 
         public VehicleType()
