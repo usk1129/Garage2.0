@@ -21,14 +21,14 @@ namespace Garage2._0.Models
 
         public int Wheels { get; set; }
         [Display(Name = "Check-In Time")]
-        public DateTime CheckInTime { get; set; }
+        public DateTime? CheckInTime { get; set; }
         [Display(Name = "Check-Out Time")]
         public DateTime CheckOutTime { get; set; }
 
         public int Price { get; set; }
         [Display(Name = "Duration")]
         [DisplayFormat(DataFormatString = @"{0:dd\:hh\:mm\:ss}", ApplyFormatInEditMode = true)]
-        public TimeSpan ParkedTime { get; set; }
+        public TimeSpan? ParkedTime { get; set; }
 
     }
 }
