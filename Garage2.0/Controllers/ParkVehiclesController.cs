@@ -2,9 +2,11 @@
 using Garage2._0.Data;
 using Garage2._0.Helpers;
 using Garage2._0.Models;
+using Garage2._0.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Garage2._0.Controllers
 {
@@ -49,12 +51,52 @@ namespace Garage2._0.Controllers
         }
         public async Task<IActionResult> Index2()
         {
-            var model = new IndexViewModel
+
+            IQueryable<ParkVehicle> vehicles = _context.ParkVehicle.Where(v => v.ParkingSpotId != null).Include(v => v.VehicleType).Include(v => v.Parkings).Include(v => v.Member);
+            List<IndexViewModel> model = new List<IndexViewModel>();
+            foreach (var vehicle in vehicles)
             {
-                ParkVehicles = await _context.ParkVehicle.ToListAsync(),
-            };
+                model.Add(new IndexViewModel
+                {
+                    RegNumber = vehicle.RegNumber,
+                    Color = vehicle.Color,
+                    Brand = vehicle.Brand,
+                    Model = vehicle.Model,
+                    Wheels = vehicle.Wheels,
+                    ParkingSpotNR = (int)vehicle.ParkingSpotId,
+                    Owner = vehicle.Member.GetFullName(),
+                    VehicleType = vehicle.VehicleType.Name
+
+                });
+
+            }
 
             return View(nameof(Index2), model);
+
+        }
+        public async Task<IActionResult> GarageSlots()
+        {
+            var spots = await _context.ParkingSpot.ToListAsync();
+
+            List<GarageSlotModel> parkingSpots = new List<GarageSlotModel>(); ;
+
+            foreach (var item in spots)
+            {
+                string occupancy = "";
+                if (item.ParkVehicleID != null)
+                    occupancy = "Taken";
+                else
+                    occupancy = "Open";
+                parkingSpots.Add(new GarageSlotModel
+                {
+                    Slot = item.ParkingSpotNr,
+                    Occupancy = occupancy
+
+
+                });
+            }
+
+            return View(parkingSpots);
 
         }
 
@@ -69,7 +111,7 @@ namespace Garage2._0.Controllers
             ViewBag.WheelsSortParm = sortOrder == "Wheels" ? "Wheels_desc" : "Wheels";
             ViewBag.CheckInTimeSortParm = sortOrder == "Date" ? "CheckInTime_desc" : "Date";
 
-            IQueryable<ParkVehicle> vehicles = _context.ParkVehicle.Include(v => v.VehicleType);
+            IQueryable<ParkVehicle> vehicles = _context.ParkVehicle.Include(v => v.VehicleType).Include(v => v.Parkings);
 
             //var vehicles = from v in _context.ParkVehicle                           
             //               select v;
@@ -85,12 +127,12 @@ namespace Garage2._0.Controllers
                 case "vehicle_desc":
                     vehicles = vehicles.OrderByDescending(v => v.VehicleType.Name);
                     break;
-                case "park_desc":
-                    vehicles = vehicles.OrderByDescending(v => v.ParkingSlot);
-                    break;
-                case "Parking Slot":
-                    vehicles = vehicles.OrderBy(v => v.ParkingSlot);
-                    break;
+                //case "park_desc":
+                //    vehicles = vehicles.OrderByDescending(v => v.ParkingSlot);
+                //    break;
+                //case "Parking Slot":
+                //    vehicles = vehicles.OrderBy(v => v.ParkingSlot);
+                //    break;
                 case "RegNumber":
                     vehicles = vehicles.OrderBy(v => v.RegNumber);
                     break;
@@ -159,12 +201,176 @@ namespace Garage2._0.Controllers
         {
             return View();
         }
+        public IActionResult CheckInMember()
+        {
+            return View();
+        }
 
-
-        // POST: ParkVehicles/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CheckInMember(CheckInMemberViewModel viewModel)
+        {
+
+            var modelValid = ModelState.IsValid;
+
+            if (modelValid)
+            {
+
+
+                var data = await _context.ParkVehicle.Where(v => v.MemberId == viewModel.MemberId && v.ParkingSpotId == null)
+             .Select(v => v)
+             .Select(t => new SelectListItem
+             {
+                 Text = t.RegNumber,
+                 Value = t.Id.ToString()
+             })
+             .ToListAsync();
+
+                var model = new CheckInMemberVehicleViewModel
+                {
+       
+                    MemberName = await _context.Member.Where(m => m.Id == viewModel.MemberId).Select(m => m.GetFullName()).FirstAsync(),
+                    Vehicles = data
+
+                };
+
+                return View(nameof(CheckInMemberVehicle), model);
+                
+            }
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CheckInMemberVehicle(CheckInMemberVehicleViewModel parkVehicle)
+        {
+
+
+            //parkVehicle.Member = member;
+
+            var modelValid = ModelState.IsValid;
+
+            if (modelValid)
+            {
+
+                //var member = await _context.Member.FindAsync(parkVehicle.MemberId);
+               // var vehicle = await _context.ParkVehicle.FindAsync(parkVehicle.VehicleId);
+
+                var vehicle = await _context.ParkVehicle
+                    .Include(v => v.VehicleType)
+                    .FirstOrDefaultAsync(v => v.Id == parkVehicle.VehicleId);
+                //// parkVehicle.CheckInTime = DateTime.Now;
+                //// ParkingSpot spot = await _context.ParkingSpot.FirstOrDefaultAsync(t => t.ParkVehicle == null);
+                // //spot.ParkVehicle = vehicle;
+                // //vehicle.ParkingSpotId = spot.Id;
+                // _context.Update(vehicle);
+                // _context.Update(spot);
+                // await _context.SaveChangesAsync();
+
+
+                // TempData["Success"] = $"{vehicle.RegNumber} is successfully parked";
+
+                var parkingSpots = await GetAvailableParkingSpotsAsync(vehicle.VehicleType.Size);
+
+
+                var model = new PickParkingSpotViewModel
+                {
+
+                    MemberName = parkVehicle.MemberName,
+                    RegNR = vehicle.RegNumber,
+                    VehicleId = vehicle.Id,
+                    Size = vehicle.VehicleType.Size,
+                    ParkingSpots = parkingSpots.Select(v => v).Select(t => new SelectListItem
+                    {
+                        Text = t.ParkingSpotNr.ToString(),
+                        Value = t.ParkingSpotNr.ToString()
+                    }).ToList()
+
+
+            };
+
+                return View(nameof(PickParkingSpot), model);
+
+            }
+
+
+            return View(parkVehicle);
+        }
+
+        private async Task<List<ParkingSpot>> GetAvailableParkingSpotsAsync(int size)
+        {
+            var emptySpots = await _context.ParkingSpot.Select(v => v).ToListAsync();
+            List<ParkingSpot> freeSpots = new List<ParkingSpot>();
+            Queue<ParkingSpot> parkingSpotsSequence = new Queue<ParkingSpot>();
+            List<ParkingSpot> parkingSpotAvailable = new List<ParkingSpot>();
+            foreach (var spot in emptySpots)
+            {
+                if (spot.ParkVehicleID == null)
+                {
+                    parkingSpotsSequence.Enqueue(spot);
+                    if (parkingSpotsSequence.Count == size)
+                    {
+                        parkingSpotAvailable.Add(parkingSpotsSequence.Dequeue());
+                    }
+                }
+                else
+                    parkingSpotsSequence.Clear();
+            }
+            return parkingSpotAvailable.ToList();
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PickParkingSpot(PickParkingSpotViewModel parkVehicle)
+        {
+
+
+            //parkVehicle.Member = member;
+
+            var modelValid = ModelState.IsValid;
+
+            if (modelValid)
+            {
+
+                //  var member = await _context.Member.FindAsync(parkVehicle.MemberId);
+                var vehicle = await _context.ParkVehicle
+                    .Include(v => v.VehicleType)
+                    .FirstOrDefaultAsync(v => v.Id == parkVehicle.VehicleId);
+
+                parkVehicle.CheckInTime = DateTime.Now;
+                // ParkingSpot spot = await _context.ParkingSpot.FirstOrDefaultAsync(t => t.ParkingSpotNr == parkVehicle.ParkingSpotId);
+                //  spot.ParkVehicle = vehicle;
+
+
+                vehicle.ParkingSpotId = parkVehicle.ParkingSpotId;
+                _context.Update(vehicle);
+                for (int i = 0; i < vehicle.VehicleType.Size; i++)
+                {
+                    var spot = await _context.ParkingSpot.FirstOrDefaultAsync(t => t.ParkingSpotNr == (parkVehicle.ParkingSpotId + i));
+                    vehicle.Parkings.Add(spot);
+                    spot.ParkVehicle = vehicle;
+                    _context.Update(spot);
+                }
+                _context.Update(vehicle);
+
+
+                await _context.SaveChangesAsync();
+
+
+                TempData["Success"] = $"{vehicle.RegNumber} is successfully parked";
+                return RedirectToAction(nameof(Index));
+
+            }
+
+
+            return View(parkVehicle);
+
+        }
+            // POST: ParkVehicles/Create
+            // To protect from overposting attacks, enable the specific properties you want to bind to.
+            // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+            [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ParkVehicle parkVehicle)
         {
@@ -173,7 +379,7 @@ namespace Garage2._0.Controllers
 
             var member = await _context.Member.FindAsync(parkVehicle.MemberId);
             //parkVehicle.Member = member;
-            
+
             var modelValid = ModelState.IsValid;
 
             if (modelValid)
@@ -181,9 +387,18 @@ namespace Garage2._0.Controllers
 
                 if (regNrDuplicate == default)
                 {
+
                     parkVehicle.CheckInTime = DateTime.Now;
-                    _context.Add(parkVehicle);
+                    VehicleType type = await _context.VehicleType.FirstOrDefaultAsync(t => t.Id == parkVehicle.VehicleTypeID);
+                    type.Vehicles.Add(parkVehicle);
+                    ParkingSpot spot = await _context.ParkingSpot.FirstOrDefaultAsync(s => s.ParkingSpotNr == parkVehicle.ParkingSpotId);
+                    spot.ParkVehicle = parkVehicle;
                     await _context.SaveChangesAsync();
+
+                    //_context.Add(parkVehicle);
+
+
+
                     TempData["Success"] = $"{parkVehicle.RegNumber} is successfully parked";
                     return RedirectToAction(nameof(Index));
                 }
@@ -200,194 +415,6 @@ namespace Garage2._0.Controllers
 
 
 
-        [HttpGet]
-        public ActionResult GetParkingSlots(VehicleType vehicleType)
-        {
-            IEnumerable<SelectListItem> slots = GetSlots(vehicleType);
-            return Json(slots);
-        }
-
-        private Dictionary<string, string> GetExistingParkedVechiles()
-        {
-
-            Dictionary<string, string> slotMap = new Dictionary<string, string>();
-
-            var vehicles = from v in _context.ParkVehicle
-                           select v;
-            vehicles = vehicles.OrderByDescending(v => v.ParkingSlot);
-
-            
-            slotMap = vehicles.Include(v => v.VehicleType).ToDictionary(v => v.ParkingSlot.ToString(), v => v.VehicleType.Name);
-
-            return slotMap;
-
-        }
-
-        private IEnumerable<SelectListItem> GetSlots(VehicleType vehicleType)
-        {
-            List<SelectListItem> parkingSlots = new List<SelectListItem>();
-
-            Dictionary<string, string> slotMap = GetExistingParkedVechiles();
-
-            parkingSlots = GetFreeSlots(vehicleType, slotMap);
-
-            return parkingSlots;
-
-        }
-
-        private bool slotOccupied(string i, Dictionary<string, string> slotMap)
-        {
-
-            foreach (var item in slotMap)
-            {
-                string[] slots = item.Key.Split(',');
-                for (int j = 0; j < slots.Length; j++)
-                {
-                    if (slots[j].Equals(i))
-                        return true;
-                }
-            }
-            return false;
-        }
-
-        public async Task<IActionResult> GarageSlots()
-        {
-            int garageCapacity = 0;
-            var model = _context.ParkVehicle;
-
-
-            Dictionary<int, string> currentSlots = new Dictionary<int, string>();
-            Dictionary<string, string> slotMap = GetExistingParkedVechiles();
-
-            if (int.TryParse(_configuration.GetSection("GarageCapacity").Value, out garageCapacity) is true)
-            {
-                if (garageCapacity > 0)
-                {
-                    for (int i = 1; i <= garageCapacity; i++)
-                    {
-                        if (slotOccupied(i.ToString(), slotMap))
-                        {
-                            currentSlots.Add(i, "Occupied");
-                        }
-                        else
-                        {
-                            currentSlots.Add(i, "Empty");
-                        }
-                    }
-                }
-            }
-
-            List<GarageSlotModel> slotCollection = new List<GarageSlotModel>();
-
-            foreach (var item in currentSlots)
-            {
-                slotCollection.Add(new GarageSlotModel { Capacity = garageCapacity, Slot = item.Key, Occupancy = item.Value });
-            }
-
-            return View(slotCollection.ToList());
-            //return View(nameof(Index), await model.ToListAsync());
-
-        }
-
-
-        private List<SelectListItem> GetFreeSlots(VehicleType vehicle, Dictionary<string, string> slotMap)
-        {
-
-            List<SelectListItem> parkingSlots = new List<SelectListItem>();
-            int garageCapacity = -1;
-            Dictionary<int, string> currentSlots = new Dictionary<int, string>();
-
-            if (int.TryParse(_configuration.GetSection("GarageCapacity").Value, out garageCapacity) is true)
-            {
-                if (garageCapacity > 0)
-                {
-                    for (int i = 1; i <= garageCapacity; i++)
-                    {
-                        if (slotOccupied(i.ToString(), slotMap))
-                        {
-                            currentSlots.Add(i, "Occupied");
-                        }
-                        else
-                        {
-                            currentSlots.Add(i, "Empty");
-                        }
-                    }
-                }
-            }
-
-            // GarageSlots gSlots = new GarageSlots(garageCapacity, currentSlots);
-
-            parkingSlots = GetNextAvailableSlot(vehicle, currentSlots, garageCapacity);
- 
-            return parkingSlots;
-
-        }
-
-
-        private List<SelectListItem> GetNextAvailableSlot(VehicleType vehicle, Dictionary<int, string> currentSlots, int garageCapacity)
-        {
-            string nextSlot = "";
-            bool slotFound = false;
-
-            List<SelectListItem> parkingSlots = new List<SelectListItem>();
-            parkingSlots.Clear();
-
-            for (int i = 0; i < currentSlots.Count; i++)
-            {
-                slotFound = false;
-                nextSlot = "";
-                //already peeking at the end with more space needed. so not found
-                if (i + vehicle.Size > garageCapacity)
-                {
-                    slotFound = false;
-                    break;
-                }
-                for (int j = 0; j < vehicle.Size; j++)
-                {
-                    if (currentSlots.ElementAt(i + j).Value.Equals("Empty"))
-                    {
-                        slotFound = true;
-                        nextSlot += "," + currentSlots.ElementAt(i + j).Key;
-                    }
-                    else
-                    {
-                        slotFound = false;
-                        break;
-                    }
-                }
-                if (slotFound)
-                {
-                    //found it
-                    break;
-                }
-            }
-
-            nextSlot = nextSlot.TrimStart(',');
-            if (slotFound is false)
-            {
-                parkingSlots.Add
-                    (
-                        new SelectListItem
-                        {
-                            Value = "-1",
-                            Text = "Not Possible to park " + vehicle.Name
-                        }
-                    ) ;
-            }
-            else
-            {
-                parkingSlots.Add
-                    (
-                        new SelectListItem
-                        {
-                            Value = nextSlot,
-                            Text = nextSlot
-                        }
-                    );
-            }
-            return parkingSlots;
-        }
-
         // GET: ParkVehicles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -395,9 +422,9 @@ namespace Garage2._0.Controllers
             {
                 return NotFound();
             }
+          ParkVehicle parkVehicle = await _context.ParkVehicle.Include(v => v.VehicleType).Include(v => v.Parkings).Include(v => v.Member).FirstAsync(v => v.VehicleTypeID == id);
 
-            var parkVehicle = await _context.ParkVehicle.FindAsync(id);
-            if (parkVehicle == null)
+             if (parkVehicle == null)
             {
                 return NotFound();
             }
@@ -409,7 +436,7 @@ namespace Garage2._0.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ParkingSlot, RegNumber,Color,Brand,Model,Wheels,CheckInTime")] ParkVehicle parkVehicle)
+        public async Task<IActionResult> Edit(int id, ParkVehicle parkVehicle)
         {
 
             if (id != parkVehicle.Id)
@@ -419,8 +446,9 @@ namespace Garage2._0.Controllers
 
             if (ModelState.IsValid)
             {
-                if (!_context.ParkVehicle.Any(x => x.RegNumber == parkVehicle.RegNumber && x.Id != parkVehicle.Id))
+                if (! await _context.ParkVehicle.AnyAsync(x => x.RegNumber == parkVehicle.RegNumber && x.Id != parkVehicle.Id))
                 {
+
                     try
                     {
                         _context.Update(parkVehicle);
@@ -475,6 +503,12 @@ namespace Garage2._0.Controllers
 
             if (parkVehicle != null)
             {
+                var parking = await _context.ParkingSpot.Where(x => x.ParkVehicleID == parkVehicle.Id).ToListAsync();
+                foreach (var item in parking)
+                {
+                    item.ParkVehicleID = null;
+                    _context.Update(item);
+                }
                 _context.ParkVehicle.Remove(parkVehicle);
                 await _context.SaveChangesAsync();
                 TempData["Success"] = $"{parkVehicle.RegNumber} has been checked out!";
@@ -506,8 +540,13 @@ namespace Garage2._0.Controllers
                     Price = CalcPrice(parkVehicle.CheckInTime, currentTime)
 
                 };
-
-                _context.ParkVehicle.Remove(parkVehicle);
+                var parking = await _context.ParkingSpot.Where(x => x.ParkVehicleID == parkVehicle.Id).ToListAsync();
+                foreach (var item in parking)
+                {
+                    item.ParkVehicleID = null;
+                    _context.Update(item);
+                }
+                    _context.ParkVehicle.Remove(parkVehicle);
                 await _context.SaveChangesAsync();
                 TempData["Success"] = $"{parkVehicle.RegNumber} has successfully been checked out!";
                 return View(receipt);
@@ -572,21 +611,21 @@ namespace Garage2._0.Controllers
         }
 
 
-         [HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddVehicleType([Bind("Name, Size")] VehicleType vehicleType)
         {
-            
+
             var modelValid = ModelState.IsValid;
 
             if (modelValid)
             {
 
-                    _context.Add(vehicleType);
-                    await _context.SaveChangesAsync();
-                    TempData["Success"] = $"{vehicleType.Name} is successfully added";
-                    return RedirectToAction(nameof(Index));
-                
+                _context.Add(vehicleType);
+                await _context.SaveChangesAsync();
+                TempData["Success"] = $"{vehicleType.Name} is successfully added";
+                return RedirectToAction(nameof(Index));
+
             }
 
 

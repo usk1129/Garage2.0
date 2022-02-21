@@ -16,3 +16,10 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+tr.Open td {
+    background-color: yellow;
+}
+tr.Taken td {
+    background-color: grey;
+}

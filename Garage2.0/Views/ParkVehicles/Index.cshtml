@@ -44,9 +44,9 @@
                 <th scope="col">
                    @Html.ActionLink("Vehicle Type", "Index", new { sortOrder = ViewBag.VehicleSortParm})
                 </th>
-                <th scope="col">
+                @*<th scope="col">
                    @Html.ActionLink("Parking Slot", "Index", new { sortOrder = ViewBag.ParkingSortParm})
-                </th>
+                </th>*@
                 <th>
                     @Html.ActionLink("RegNumber", "Index", new { sortOrder = ViewBag.RegNumberSortParm})
                 </th>
@@ -75,9 +75,9 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.VehicleType.Name)
                     </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ParkingSlot)
-                    </td>
+                    @*<td>
+                        @Html.DisplayFor(modelItem => parking)
+                    </td>*@
                     <td style="text-transform:uppercase;">
                         @Html.DisplayFor(modelItem => item.RegNumber)
 

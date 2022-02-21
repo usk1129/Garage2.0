@@ -1,4 +1,5 @@
-﻿@model IndexViewModel
+﻿@model IEnumerable<Garage2._0.Models.IndexViewModel>
+
 @inject IVehicleTypeSelectListService service
 @{
     ViewData["Title"] = "Garage List";
@@ -42,6 +43,9 @@
         <thead>
             <tr>
                 <th scope="col">
+                   @Html.ActionLink("Owner", "Index", new { sortOrder = ViewBag.VehicleSortParm})
+                </th>
+                <th scope="col">
                    @Html.ActionLink("Vehicle Type", "Index", new { sortOrder = ViewBag.VehicleSortParm})
                 </th>
                 <th scope="col">
@@ -62,21 +66,22 @@
                 <th>
                     @Html.ActionLink("Wheels", "Index", new { sortOrder = ViewBag.WheelsSortParm})
                 </th>
-                <th>
-                    @Html.ActionLink("CheckInTime", "Index", new { sortOrder = ViewBag.CheckInTimeSortParm})
-                </th>
-                <th></th>
+
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.ParkVehicles)
+            
+            @foreach (var item in Model)
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.VehicleType.Name)
+                        @Html.DisplayFor(modelItem => item.Owner)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.ParkingSlot)
+                        @Html.DisplayFor(modelItem => item.VehicleType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ParkingSpotNR)
                     </td>
                     <td style="text-transform:uppercase;">
                         @Html.DisplayFor(modelItem => item.RegNumber)
@@ -94,14 +99,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Wheels)
                     </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CheckInTime)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Check-Out</a>
-                    </td>
+
                 </tr>
             }
         </tbody>
