@@ -72,7 +72,6 @@ namespace Garage2._0.Controllers
             }
 
             return View(nameof(Index2), model);
-
         }
         public async Task<IActionResult> GarageSlots()
         {

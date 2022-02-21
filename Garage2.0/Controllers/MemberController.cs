@@ -163,18 +163,14 @@ namespace Garage2._0.Controllers
         {
             return _context.Member.Any(e => e.Id == id);
         }
-        //public async Task<IActionResult> ShowSearchResults(IndexViewModel viewModel)
-        //{
-        //    var firstNames = string.IsNullOrWhiteSpace(viewModel.Owner) ?
-        //                            _context.Member :
-        //                            _context.Member.Where(m => m.FirstName.StartsWith(viewModel.Owner));
 
-        //    var model = new IndexViewModel
-        //    {
-        //        FirstName = await firstNames.ToListAsync(),
-        //    };
+        public async Task<IActionResult> Filter(string? firstname)
+        {
+            var model = string.IsNullOrWhiteSpace(firstname) ?
+                                   _context.Member :
+                                   _context.Member.Where(m => m.FirstName.StartsWith(firstname));
 
-        //    return View(nameof(Index), model);
-        //}
+            return View(nameof(Index), await model.ToListAsync());
+        }
     }
 }

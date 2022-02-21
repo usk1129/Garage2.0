@@ -5,7 +5,7 @@ namespace Garage2._0.Models
 {
     public class CheckInMemberVehicleViewModel
     {
-            public string? MemberName { get; set; }
+        public string? MemberName { get; set; }
 
         public IEnumerable<SelectListItem> Vehicles  { get; set; } = new List<SelectListItem>();
         public int VehicleId { get; set; }
