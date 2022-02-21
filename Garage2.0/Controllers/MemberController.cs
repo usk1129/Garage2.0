@@ -55,7 +55,7 @@ namespace Garage2._0.Controllers
         {
             if (ModelState.IsValid)
             {
-                string[] words = member.PersonNumber.Split('-');
+                string[] words = member.PersonNumber.Split('-','+');
                 var today = DateTime.Today;
                 int lastTwoDigitsOfYear = int.Parse(today.ToString("yy"));
 
