@@ -598,42 +598,48 @@ namespace Garage2._0.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Receipt(int id)
         {
-            var currentTime = DateTime.Now;
+            
             var parkVehicle = await _context.ParkVehicle
                 .FirstOrDefaultAsync(m => m.Id == id);
-            var  member = await _context.Member.FirstAsync(m => m.Id == parkVehicle.MemberId);
-            var type = await _context.VehicleType.FirstAsync(m => m.Id == parkVehicle.VehicleTypeID);
-            if (parkVehicle != default)
+            if (parkVehicle.CheckInTime != null)
             {
-                var receipt = new ReceiptViewModel
-                {
-                    Owner = member.GetFullName(),
-                    VehicleType = type.Name,
-                    Id = id,
-                    RegNumber = parkVehicle.RegNumber,
-                    Color = parkVehicle.Color,
-                    Brand = parkVehicle.Brand,
-                    Model = parkVehicle.Model,
-                    Wheels = parkVehicle.Wheels,
-                    CheckInTime = parkVehicle.CheckInTime,
-                    CheckOutTime = currentTime,
-                    ParkedTime = currentTime - parkVehicle.CheckInTime,
-                    Price = CalcPrice((DateTime)parkVehicle.CheckInTime, currentTime)
 
-                };
-                var parking = await _context.ParkingSpot.Where(x => x.ParkVehicleID == parkVehicle.Id).ToListAsync();
-                foreach (var item in parking)
+                var currentTime = DateTime.Now;
+
+                var member = await _context.Member.FirstAsync(m => m.Id == parkVehicle.MemberId);
+                var type = await _context.VehicleType.FirstAsync(m => m.Id == parkVehicle.VehicleTypeID);
+                if (parkVehicle != default)
                 {
-                    item.ParkVehicleID = null;
-                    _context.Update(item);
+                    var receipt = new ReceiptViewModel
+                    {
+                        Owner = member.GetFullName(),
+                        VehicleType = type.Name,
+                        Id = id,
+                        RegNumber = parkVehicle.RegNumber,
+                        Color = parkVehicle.Color,
+                        Brand = parkVehicle.Brand,
+                        Model = parkVehicle.Model,
+                        Wheels = parkVehicle.Wheels,
+                        CheckInTime = parkVehicle.CheckInTime,
+                        CheckOutTime = currentTime,
+                        ParkedTime = currentTime - parkVehicle.CheckInTime,
+                        Price = CalcPrice((DateTime)parkVehicle.CheckInTime, currentTime)
+
+                    };
+                    var parking = await _context.ParkingSpot.Where(x => x.ParkVehicleID == parkVehicle.Id).ToListAsync();
+                    foreach (var item in parking)
+                    {
+                        item.ParkVehicleID = null;
+                        _context.Update(item);
+                    }
+                    // _context.ParkVehicle.Remove(parkVehicle);
+                    parkVehicle.CheckInTime = null;
+                    parkVehicle.ParkingSpotId = null;
+                    await _context.SaveChangesAsync();
+                    TempData["Success"] = $"{parkVehicle.RegNumber} has successfully been checked out!";
+                    return View(receipt);
+
                 }
-                // _context.ParkVehicle.Remove(parkVehicle);
-                parkVehicle.CheckInTime = null;
-                parkVehicle.ParkingSpotId = null;
-                await _context.SaveChangesAsync();
-                TempData["Success"] = $"{parkVehicle.RegNumber} has successfully been checked out!";
-                return View(receipt);
-
             }
             return RedirectToAction(nameof(Index));
         }
