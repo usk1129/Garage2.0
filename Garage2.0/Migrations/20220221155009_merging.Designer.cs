@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garage2._0.Migrations
 {
     [DbContext(typeof(Garage2_0Context))]
-    [Migration("20220221144348_null")]
-    partial class @null
+    [Migration("20220221155009_merging")]
+    partial class merging
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
