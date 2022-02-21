@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Garage2._0.Migrations
 {
-    public partial class init : Migration
+    public partial class merging : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,7 +15,7 @@ namespace Garage2._0.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PersonNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -51,7 +51,7 @@ namespace Garage2._0.Migrations
                     Brand = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Model = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Wheels = table.Column<int>(type: "int", nullable: false),
-                    CheckInTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CheckInTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     MemberId = table.Column<int>(type: "int", nullable: false),
                     VehicleTypeID = table.Column<int>(type: "int", nullable: false),
                     ParkingSpotId = table.Column<int>(type: "int", nullable: true)
