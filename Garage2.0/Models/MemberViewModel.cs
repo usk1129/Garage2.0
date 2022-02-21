@@ -2,6 +2,7 @@
 {
     public class MemberViewModel
     {
+        public int Id { get; set; }
         public string? Avatar { get; set; }
 
         public string FirstName { get; set; }
@@ -10,7 +11,7 @@
 
         public string PersonNumber { get; set; }
         public int Age { get; set; }
-
-        public ICollection<ParkVehicle> Vehicles { get; set; } = new List<ParkVehicle>();
+        public int NumberOfVehicles { get; set; }
+        //public ICollection<ParkVehicle> Vehicles { get; set; } = new List<ParkVehicle>();
     }
 }
