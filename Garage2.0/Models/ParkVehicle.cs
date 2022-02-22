@@ -10,6 +10,8 @@ namespace Garage2._0.Models
         //public string ParkingSlot { get; set; }
         //        public IEnumerable<SelectListItem> ParkingSlots { get; set; } 
 
+        [Display(Name = "Registration Number")]
+
         [StringLength(30)]
         public string RegNumber { get; set; }
 
@@ -34,6 +36,7 @@ namespace Garage2._0.Models
 
         // Nav Prop
         public Member? Member { get; set; }
+        [Display(Name = "Vehicle Type")]
 
         public int VehicleTypeID { get; set; }
 

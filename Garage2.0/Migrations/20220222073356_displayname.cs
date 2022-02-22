@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Garage2._0.Migrations
 {
-    public partial class merging : Migration
+    public partial class displayname : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

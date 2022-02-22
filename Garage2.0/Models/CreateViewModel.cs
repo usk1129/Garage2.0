@@ -10,6 +10,8 @@ namespace Garage2._0.Models
         //public string ParkingSlot { get; set; }
         //        public IEnumerable<SelectListItem> ParkingSlots { get; set; } 
 
+        [Display(Name = "Registration Number")]
+
         [StringLength(30)]
         public string RegNumber { get; set; }
 
@@ -31,6 +33,8 @@ namespace Garage2._0.Models
 
         // Foreign Key
         public int MemberId { get; set; }
+
+        [Display(Name = "Vehicle Type")]
         public int VehicleTypeID { get; set; }
         public int ParkingSpotID { get; set; }
 
