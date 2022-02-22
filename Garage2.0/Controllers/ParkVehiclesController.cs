@@ -20,9 +20,11 @@ namespace Garage2._0.Controllers
 
         public async Task<IActionResult> Filter(string? regSearch, string? colSearch, string? brandSearch, string modelSearch, int? wheelSearch, string? vehicleType)
         {
-            var model = string.IsNullOrWhiteSpace(regSearch) ?
-                                    _context.ParkVehicle :
-                                    _context.ParkVehicle.Include(m => m.VehicleType).Where(m => m.RegNumber.Contains(regSearch));
+            var model = _context.ParkVehicle.Include(m => m.VehicleType).Where(m => m.RegNumber.Contains(""));
+
+             model = string.IsNullOrWhiteSpace(regSearch) ?
+                                    model :
+                                    model.Include(m => m.VehicleType).Where(m => m.RegNumber.Contains(regSearch));
 
             model = string.IsNullOrWhiteSpace(colSearch) ?
                           model :
