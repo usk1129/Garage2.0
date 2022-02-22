@@ -9,7 +9,7 @@
 {
     <div class="alert alert-success">@TempData["Success"]</div>
 }
-<h1>Garage List</h1>
+<h1>Vehicle List</h1>
 
 <form asp-action="Filter">
     <div class="input-group mb-3">
@@ -38,7 +38,7 @@
 
 <div class="table-responsive col m-3 ">
     <table class="table table caption-top table-bordered table-hover table-primary ">
-        <caption> Parked Vehicles Details </caption>
+        <caption> Vehicles Details </caption>
         <thead>
             <tr>
                 <th scope="col">
@@ -98,9 +98,15 @@
                         @Html.DisplayFor(modelItem => item.CheckInTime)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>                         
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> 
+                        @if(item.CheckInTime != null) 
+{
+    
                         <a asp-action="Delete" asp-route-id="@item.Id">Check-Out</a>
+}
+
                     </td>
                 </tr>
             }

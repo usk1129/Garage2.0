@@ -23,40 +23,38 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="ParkVehicles" asp-action="Index">List</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ParkVehicles" asp-action="Index">Full List</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="ParkVehicles" asp-action="Create">Check-In</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ParkVehicles" asp-action="Index2">Parked List</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="ParkVehicles" asp-action="Statistics">Statistics</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ParkVehicles" asp-action="Create">Register Vehicle</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="ParkVehicles" asp-action="GarageSlots">Occupancy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ParkVehicles" asp-action="CheckInMember">Member Check-In</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Member" asp-action="Create">Register</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Member" asp-action="Create">Register Member</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Member" asp-action="">List of members</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Member" asp-action="">List of Members</a>
                         </li>
                         <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li>
+                        <li class="nav-item">
                             <a class="dropdown-item" asp-area="" asp-controller="ParkVehicles" asp-action="AddVehicleType">Add Vehicle Type</a>
                         </li>
-                        <li>
-                            <a class="dropdown-item" asp-area="" asp-controller="ParkVehicles" asp-action="Index2">List Index</a>
+                        <li class="nav-item">
+                            <a class="dropdown-item" asp-area="" asp-controller="ParkVehicles" asp-action="Statistics">Statistics</a>
                         </li>
-                        
-                        <li>
-                            <a class="dropdown-item" asp-area="" asp-controller="ParkVehicles" asp-action="CheckInMember">MemberCheckIn</a>
+                        <li class="nav-item">
+                            <a class="dropdown-item" asp-area="" asp-controller="ParkVehicles" asp-action="GarageSlots">Occupancy</a>
                         </li>
-                        <li>
-                            <a class="dropdown-item" asp-area="" asp-controller="Member" asp-action="Index2">Member Views with Vehicles</a>
+                        <li class="nav-item">
+                            <a class="dropdown-item" asp-area="" asp-controller="Member" asp-action="Index2">Members List</a>
                         </li>
                     </ul>
                     </ul>

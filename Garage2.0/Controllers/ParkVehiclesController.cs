@@ -20,9 +20,11 @@ namespace Garage2._0.Controllers
 
         public async Task<IActionResult> Filter(string? regSearch, string? colSearch, string? brandSearch, string modelSearch, int? wheelSearch, string? vehicleType)
         {
-            var model = string.IsNullOrWhiteSpace(regSearch) ?
-                                    _context.ParkVehicle :
-                                    _context.ParkVehicle.Include(m => m.VehicleType).Where(m => m.RegNumber.Contains(regSearch));
+            var model = _context.ParkVehicle.Include(m => m.VehicleType).Where(m => m.RegNumber.Contains(""));
+
+             model = string.IsNullOrWhiteSpace(regSearch) ?
+                                    model :
+                                    model.Include(m => m.VehicleType).Where(m => m.RegNumber.Contains(regSearch));
 
             model = string.IsNullOrWhiteSpace(colSearch) ?
                           model :
@@ -280,43 +282,8 @@ namespace Garage2._0.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CheckInMember(CheckInMemberViewModel viewModel)
+        public async Task<IActionResult> CheckInMember(CheckInMemberVehicleViewModel parkVehicle)
         {
-
-            var modelValid = ModelState.IsValid;
-
-            if (modelValid)
-            {
-
-
-                var data = await _context.ParkVehicle.Where(v => v.MemberId == viewModel.MemberId && v.ParkingSpotId == null)
-             .Select(v => v)
-             .Select(t => new SelectListItem
-             {
-                 Text = t.RegNumber,
-                 Value = t.Id.ToString()
-             })
-             .ToListAsync();
-
-                var model = new CheckInMemberVehicleViewModel
-                {
-
-                    MemberName = await _context.Member.Where(m => m.Id == viewModel.MemberId).Select(m => m.GetFullName()).FirstAsync(),
-                    Vehicles = data
-
-                };
-
-                return View(nameof(CheckInMemberVehicle), model);
-
-            }
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CheckInMemberVehicle(CheckInMemberVehicleViewModel parkVehicle)
-        {
-
 
             //parkVehicle.Member = member;
 
@@ -325,14 +292,14 @@ namespace Garage2._0.Controllers
             if (modelValid)
             {
 
-                //var member = await _context.Member.FindAsync(parkVehicle.MemberId);
+                var member = await _context.Member.FindAsync(parkVehicle.MemberId);
                 // var vehicle = await _context.ParkVehicle.FindAsync(parkVehicle.VehicleId);
 
                 var vehicle = await _context.ParkVehicle
                     .Include(v => v.VehicleType)
                     .FirstOrDefaultAsync(v => v.Id == parkVehicle.VehicleId);
                 //// parkVehicle.CheckInTime = DateTime.Now;
-                //// ParkingSpot spot = await _context.ParkingSpot.FirstOrDefaultAsync(t => t.ParkVehicle == null);
+                //ParkingSpot spot = await _context.ParkingSpot.FirstOrDefaultAsync(t => t.ParkVehicle == null);
                 // //spot.ParkVehicle = vehicle;
                 // //vehicle.ParkingSpotId = spot.Id;
                 // _context.Update(vehicle);
@@ -348,7 +315,7 @@ namespace Garage2._0.Controllers
                 var model = new PickParkingSpotViewModel
                 {
 
-                    MemberName = parkVehicle.MemberName,
+                    MemberName = member.GetFullName(),
                     RegNR = vehicle.RegNumber,
                     VehicleId = vehicle.Id,
                     Size = vehicle.VehicleType.Size,
@@ -462,6 +429,7 @@ namespace Garage2._0.Controllers
 
                     //parkVehicle.CheckInTime = DateTime.Now;
                     VehicleType type = await _context.VehicleType.FirstOrDefaultAsync(t => t.Id == parkVehicle.VehicleTypeID);
+                    parkVehicle.VehicleTypeID = type.Id;
                     type.Vehicles.Add(parkVehicle);
                     //ParkingSpot spot = await _context.ParkingSpot.FirstOrDefaultAsync(s => s.ParkingSpotNr == parkVehicle.ParkingSpotId);
                     //spot.ParkVehicle = parkVehicle;
@@ -471,7 +439,7 @@ namespace Garage2._0.Controllers
 
 
 
-                    TempData["Success"] = $"{parkVehicle.RegNumber} is successfully parked";
+                    TempData["Success"] = $"{parkVehicle.RegNumber} is successfully registered";
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -622,6 +590,7 @@ namespace Garage2._0.Controllers
                         CheckOutTime = currentTime,
                         ParkedTime = currentTime - parkVehicle.CheckInTime,
                         Price = CalcPrice((DateTime)parkVehicle.CheckInTime, currentTime)
+                        
 
                     };
                     var parking = await _context.ParkingSpot.Where(x => x.ParkVehicleID == parkVehicle.Id).ToListAsync();
@@ -656,12 +625,19 @@ namespace Garage2._0.Controllers
             int currentFees = 0;
             var currentTime = DateTime.Now;
 
+            var addedTime = DateTime.Now.AddHours(1);
+            var parkedVehicles = 0;
+            int predictedFees = 0;
+            int members = 0;
+
             List<VehicleTypeHelper> vehicleTypeAmounts = await _context.ParkVehicle.GroupBy(t => t.VehicleType.Name)
                                         .Select(t => new VehicleTypeHelper
                                         {
                                             Category = t.Key,
                                             Count = t.Count()
                                         }).ToListAsync();
+            members = _context.Member.Count();
+            
 
 
 
@@ -670,8 +646,12 @@ namespace Garage2._0.Controllers
                 wheels += x.Wheels;
                 totalVehicles += 1;
                 if (x.CheckInTime != null)
+                {
                     currentFees += CalcPrice((DateTime)x.CheckInTime, currentTime);
-
+                    predictedFees += CalcPrice((DateTime)x.CheckInTime, addedTime);
+                }
+                if (x.ParkingSpotId != null)
+                    parkedVehicles++;
             });
 
             var viewModel = new StatisticsViewModel
@@ -679,7 +659,10 @@ namespace Garage2._0.Controllers
                 VehicleTypeAmount = vehicleTypeAmounts,
                 AmountOfWheels = wheels,
                 AmountOfVehicles = totalVehicles,
-                CurrentFees = currentFees
+                CurrentFees = currentFees,
+                AmountOfParkedVehicles = parkedVehicles,
+                PredictedFees = predictedFees,
+                Members = members
 
             };
 
@@ -718,6 +701,20 @@ namespace Garage2._0.Controllers
 
 
             return View(vehicleType);
+        }
+        public async Task<JsonResult> GetSubCategoryByMemberIdAsync(int memberId)
+        {;
+            var data = await _context.ParkVehicle.Where(v => v.MemberId == memberId && v.ParkingSpotId == null)
+             .Select(v => v)
+             .Select(t => new CheckInMemberVehicleViewModel
+             {
+                 MemberId = memberId,
+                VehicleId = t.Id,
+                VehicleName = t.RegNumber
+             })
+             .ToListAsync();
+
+            return Json(data);
         }
     }
 }
