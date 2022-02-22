@@ -436,7 +436,7 @@ namespace Garage2._0.Controllers
 
 
 
-                    TempData["Success"] = $"{parkVehicle.RegNumber} is successfully parked";
+                    TempData["Success"] = $"{parkVehicle.RegNumber} is successfully registered";
                     return RedirectToAction(nameof(Index));
                 }
 
