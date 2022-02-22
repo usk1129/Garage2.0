@@ -17,7 +17,7 @@ namespace Garage2._0.Controllers
             _context = context;
         }
 
-        // GET: Member
+        
         public async Task<IActionResult> Index()
         {
             return View(await _context.Member.ToListAsync());
@@ -45,7 +45,6 @@ namespace Garage2._0.Controllers
 
 
 
-        // GET: Member/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -64,15 +63,12 @@ namespace Garage2._0.Controllers
             return View(member);
         }
 
-        // GET: Member/Create
+       
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Member/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Member member)
@@ -121,7 +117,7 @@ namespace Garage2._0.Controllers
 
             return View(member);
         }
-        // GET: Member/Edit/5
+       
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -137,9 +133,6 @@ namespace Garage2._0.Controllers
             return View(member);
         }
 
-        // POST: Member/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Member member)
@@ -172,7 +165,6 @@ namespace Garage2._0.Controllers
             return View(member);
         }
 
-        // GET: Member/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -190,13 +182,12 @@ namespace Garage2._0.Controllers
             return View(member);
         }
 
-        // POST: Member/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var member = await _context.Member.FindAsync(id);
-            // var hej = member.Vehicles.FirstOrDefault();
+            
             if (member != null)
             {
                 var parkedVehicles = _context.ParkVehicle.Where(p => p.MemberId == id);
@@ -210,12 +201,7 @@ namespace Garage2._0.Controllers
                         return RedirectToAction(nameof(Index));
 
                     }
-                    //var spots = _context.ParkingSpot.Where(s => s.ParkVehicleID == vehicle.Id);
-                    //code for removing parked vehicles rather than warning
-                    //foreach (var spot in spots)
-                    //{
-                    //    spot.ParkVehicleID = null;
-                    //}
+                   
                 }
 
                 _context.Member.Remove(member);

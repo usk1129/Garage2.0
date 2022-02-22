@@ -187,8 +187,6 @@ namespace Garage2._0.Controllers
 
             IQueryable<ParkVehicle> vehicles = _context.ParkVehicle.Include(v => v.VehicleType).Include(v => v.Parkings);
 
-            //var vehicles = from v in _context.ParkVehicle                           
-            //               select v;
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -201,12 +199,7 @@ namespace Garage2._0.Controllers
                 case "vehicle_desc":
                     vehicles = vehicles.OrderByDescending(v => v.VehicleType.Name);
                     break;
-                //case "park_desc":
-                //    vehicles = vehicles.OrderByDescending(v => v.ParkingSlot);
-                //    break;
-                //case "Parking Slot":
-                //    vehicles = vehicles.OrderBy(v => v.ParkingSlot);
-                //    break;
+               
                 case "RegNumber":
                     vehicles = vehicles.OrderBy(v => v.RegNumber);
                     break;
@@ -251,7 +244,6 @@ namespace Garage2._0.Controllers
             return View(await vehicles.AsNoTracking().ToListAsync());
         }
 
-        // GET: ParkVehicles/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -270,7 +262,6 @@ namespace Garage2._0.Controllers
             return View(parkVehicle);
         }
 
-        // GET: ParkVehicles/Create
         public IActionResult Create()
         {
             return View();
@@ -285,7 +276,6 @@ namespace Garage2._0.Controllers
         public async Task<IActionResult> CheckInMember(CheckInMemberVehicleViewModel parkVehicle)
         {
 
-            //parkVehicle.Member = member;
 
             var modelValid = ModelState.IsValid;
 
@@ -293,22 +283,14 @@ namespace Garage2._0.Controllers
             {
 
                 var member = await _context.Member.FindAsync(parkVehicle.MemberId);
-                // var vehicle = await _context.ParkVehicle.FindAsync(parkVehicle.VehicleId);
 
                 var vehicle = await _context.ParkVehicle
                     .Include(v => v.VehicleType)
                     .FirstOrDefaultAsync(v => v.Id == parkVehicle.VehicleId);
-                //// parkVehicle.CheckInTime = DateTime.Now;
-                //ParkingSpot spot = await _context.ParkingSpot.FirstOrDefaultAsync(t => t.ParkVehicle == null);
-                // //spot.ParkVehicle = vehicle;
-                // //vehicle.ParkingSpotId = spot.Id;
-                // _context.Update(vehicle);
-                // _context.Update(spot);
-                // await _context.SaveChangesAsync();
+               
 
 
-                // TempData["Success"] = $"{vehicle.RegNumber} is successfully parked";
-
+               
                 var parkingSpots = await GetAvailableParkingSpotsAsync(vehicle.VehicleType.Size);
 
 
@@ -365,21 +347,17 @@ namespace Garage2._0.Controllers
         {
 
 
-            //parkVehicle.Member = member;
 
             var modelValid = ModelState.IsValid;
 
             if (modelValid)
             {
 
-                //  var member = await _context.Member.FindAsync(parkVehicle.MemberId);
                 var vehicle = await _context.ParkVehicle
                     .Include(v => v.VehicleType)
                     .FirstOrDefaultAsync(v => v.Id == parkVehicle.VehicleId);
 
                 vehicle.CheckInTime = DateTime.Now;
-                // ParkingSpot spot = await _context.ParkingSpot.FirstOrDefaultAsync(t => t.ParkingSpotNr == parkVehicle.ParkingSpotId);
-                //  spot.ParkVehicle = vehicle;
 
 
                 vehicle.ParkingSpotId = parkVehicle.ParkingSpotId;
@@ -406,9 +384,7 @@ namespace Garage2._0.Controllers
             return View(parkVehicle);
 
         }
-        // POST: ParkVehicles/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ParkVehicle parkVehicle)
@@ -417,8 +393,7 @@ namespace Garage2._0.Controllers
 
 
             var member = await _context.Member.FindAsync(parkVehicle.MemberId);
-            //parkVehicle.Member = member;
-
+            
             var modelValid = ModelState.IsValid;
 
             if (modelValid)
@@ -427,15 +402,12 @@ namespace Garage2._0.Controllers
                 if (regNrDuplicate == default)
                 {
 
-                    //parkVehicle.CheckInTime = DateTime.Now;
                     VehicleType type = await _context.VehicleType.FirstOrDefaultAsync(t => t.Id == parkVehicle.VehicleTypeID);
                     parkVehicle.VehicleTypeID = type.Id;
                     type.Vehicles.Add(parkVehicle);
-                    //ParkingSpot spot = await _context.ParkingSpot.FirstOrDefaultAsync(s => s.ParkingSpotNr == parkVehicle.ParkingSpotId);
-                    //spot.ParkVehicle = parkVehicle;
+                 
                     await _context.SaveChangesAsync();
 
-                    //_context.Add(parkVehicle);
 
 
 
@@ -455,7 +427,6 @@ namespace Garage2._0.Controllers
 
 
 
-        // GET: ParkVehicles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -471,9 +442,6 @@ namespace Garage2._0.Controllers
             return View(parkVehicle);
         }
 
-        // POST: ParkVehicles/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ParkVehicle parkVehicle)
@@ -516,7 +484,6 @@ namespace Garage2._0.Controllers
             return View(parkVehicle);
         }
 
-        // GET: ParkVehicles/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -534,7 +501,6 @@ namespace Garage2._0.Controllers
             return View(parkVehicle);
         }
 
-        // POST: ParkVehicles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -550,7 +516,6 @@ namespace Garage2._0.Controllers
 
                     _context.Update(item);
                 }
-                //_context.ParkVehicle.Remove(parkVehicle);
                 parkVehicle.CheckInTime = null;
                 parkVehicle.ParkingSpotId = null;
                 await _context.SaveChangesAsync();
@@ -599,7 +564,6 @@ namespace Garage2._0.Controllers
                         item.ParkVehicleID = null;
                         _context.Update(item);
                     }
-                    // _context.ParkVehicle.Remove(parkVehicle);
                     parkVehicle.CheckInTime = null;
                     parkVehicle.ParkingSpotId = null;
                     await _context.SaveChangesAsync();

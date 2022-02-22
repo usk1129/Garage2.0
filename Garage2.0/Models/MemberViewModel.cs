@@ -11,6 +11,5 @@
         public string PersonNumber { get; set; }
         public int Age { get; set; }
         public int NumberOfVehicles { get; set; }
-        //public ICollection<ParkVehicle> Vehicles { get; set; } = new List<ParkVehicle>();
     }
 }
