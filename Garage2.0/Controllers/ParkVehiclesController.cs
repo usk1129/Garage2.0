@@ -587,6 +587,7 @@ namespace Garage2._0.Controllers
                         CheckOutTime = currentTime,
                         ParkedTime = currentTime - parkVehicle.CheckInTime,
                         Price = CalcPrice((DateTime)parkVehicle.CheckInTime, currentTime)
+                        
 
                     };
                     var parking = await _context.ParkingSpot.Where(x => x.ParkVehicleID == parkVehicle.Id).ToListAsync();
@@ -621,12 +622,19 @@ namespace Garage2._0.Controllers
             int currentFees = 0;
             var currentTime = DateTime.Now;
 
+            var addedTime = DateTime.Now.AddHours(1);
+            var parkedVehicles = 0;
+            int predictedFees = 0;
+            int members = 0;
+
             List<VehicleTypeHelper> vehicleTypeAmounts = await _context.ParkVehicle.GroupBy(t => t.VehicleType.Name)
                                         .Select(t => new VehicleTypeHelper
                                         {
                                             Category = t.Key,
                                             Count = t.Count()
                                         }).ToListAsync();
+            members = _context.Member.Count();
+            
 
 
 
@@ -635,8 +643,12 @@ namespace Garage2._0.Controllers
                 wheels += x.Wheels;
                 totalVehicles += 1;
                 if (x.CheckInTime != null)
+                {
                     currentFees += CalcPrice((DateTime)x.CheckInTime, currentTime);
-
+                    predictedFees += CalcPrice((DateTime)x.CheckInTime, addedTime);
+                }
+                if (x.ParkingSpotId != null)
+                    parkedVehicles++;
             });
 
             var viewModel = new StatisticsViewModel
@@ -644,7 +656,10 @@ namespace Garage2._0.Controllers
                 VehicleTypeAmount = vehicleTypeAmounts,
                 AmountOfWheels = wheels,
                 AmountOfVehicles = totalVehicles,
-                CurrentFees = currentFees
+                CurrentFees = currentFees,
+                AmountOfParkedVehicles = parkedVehicles,
+                PredictedFees = predictedFees,
+                Members = members
 
             };
 
