@@ -427,6 +427,7 @@ namespace Garage2._0.Controllers
 
                     //parkVehicle.CheckInTime = DateTime.Now;
                     VehicleType type = await _context.VehicleType.FirstOrDefaultAsync(t => t.Id == parkVehicle.VehicleTypeID);
+                    parkVehicle.VehicleTypeID = type.Id;
                     type.Vehicles.Add(parkVehicle);
                     //ParkingSpot spot = await _context.ParkingSpot.FirstOrDefaultAsync(s => s.ParkingSpotNr == parkVehicle.ParkingSpotId);
                     //spot.ParkVehicle = parkVehicle;
@@ -701,7 +702,7 @@ namespace Garage2._0.Controllers
         }
         public async Task<JsonResult> GetSubCategoryByMemberIdAsync(int memberId)
         {;
-            var data = await _context.ParkVehicle.Where(v => v.MemberId == memberId)
+            var data = await _context.ParkVehicle.Where(v => v.MemberId == memberId && v.ParkingSpotId == null)
              .Select(v => v)
              .Select(t => new CheckInMemberVehicleViewModel
              {
