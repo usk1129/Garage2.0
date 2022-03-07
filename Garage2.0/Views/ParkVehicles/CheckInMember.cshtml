@@ -60,7 +60,7 @@ var getSubCategoryListByMemberId = function () {
             $('#VehicleId').find('option').remove()
             $(data).each(
                 function (index, item) {
-                    $('#VehicleId').append('<option value="' + itemvehicleId + '">' + item.vehicleName + '</option>')
+                    $('#VehicleId').append('<option value="' + item.vehicleId + '">' + item.vehicleName + '</option>')
                 });
         },
         error: function () {
