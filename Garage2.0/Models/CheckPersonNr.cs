@@ -9,7 +9,7 @@ namespace Garage2._0.Models
         {
             if (value is string personNr)
             {
-                var parts = personNr.Trim().Split('-', '+');
+                var parts = personNr.Trim().Split('<', '+');
                 if (parts.Length != 2) return false;
 
                 if (DateTime.TryParseExact(parts[0], new[] { "yyMMdd", "yyyyMMdd" }, new CultureInfo("sv-SE"), DateTimeStyles.None, out DateTime dt))
