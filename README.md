@@ -12,6 +12,6 @@ We have 4 Entities with it's own attributies.
 
 We have made it possible for you to add different types of vehicles and to specify how many slots the specified vehicle should take and the opportunity to select the existing member when you check in. 
 There are also some other overviews for members with parked vehicles or not and how many. Of course view modules for vehicles, static information and etc 
-There are also search functions for members and parked vehicle.
+There are also search and sort functions for members and parked vehicles.
 
 When you check out, there is the possible to check the time how long it has been parked automatically and to get the receipt for it.
