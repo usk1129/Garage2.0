@@ -3,6 +3,37 @@
 Group assignment by Lexicon.
 This is the second version of the Garage console application that is built upon using ASP.NET MVC framework and Entity framework.
 
+
+## Table of Contents
+
+- [Clone](#clone)
+- [Install](#install)
+- [Start](#start)
+- [Usage](#usage)
+
+## Clone
+
+You can clone this repository for your own uses through the following command in your terminal:
+```
+cd <your-chosen-folder>
+git clone https://github.com/usk1129/Garage2.0
+```
+
+## Install
+
+After downloading the code, open the solution with Visual Studio.
+
+To seed the database with the seed-data created, the following command must be executed in the "Package Manager Console" of Visual Studio:
+```
+update-database -context Garage2_0Context
+```
+
+## Start
+
+Once the solution is opened in Visual Studio it can easily be run through Visual studio. A server should be started and the browser be opened automatically.
+
+## Usage
+
 The goal of this garage application is to register different types of vehicles and that the different vehicles should take different place(many to many). 
 There must also be registered members and one member can check in several vehicles and one vehicle can only have one owner / member(one to many). We register a member by a person-number.
 This repo represents our implementation of the garage application.
